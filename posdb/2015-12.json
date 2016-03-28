@@ -1,0 +1,915 @@
+{
+    "2015-12-01": {
+        "cash": 4808.0, 
+        "securities": {
+            "000539.XSHE": {
+                "amount": 200.0, 
+                "name": "\u7ca4\u7535\u529bA", 
+                "price": 7.41
+            }, 
+            "000709.XSHE": {
+                "amount": 600.0, 
+                "name": "\u6cb3\u5317\u94a2\u94c1", 
+                "price": 3.15
+            }, 
+            "000725.XSHE": {
+                "amount": 600.0, 
+                "name": "\u4eac\u4e1c\u65b9A", 
+                "price": 2.94
+            }, 
+            "002081.XSHE": {
+                "amount": 100.0, 
+                "name": "\u91d1\u87b3\u8782", 
+                "price": 16.49
+            }, 
+            "002375.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e9a\u53a6\u80a1\u4efd", 
+                "price": 15.75
+            }, 
+            "600028.XSHG": {
+                "amount": 400.0, 
+                "name": "\u4e2d\u56fd\u77f3\u5316", 
+                "price": 4.93
+            }, 
+            "600352.XSHG": {
+                "amount": 200.0, 
+                "name": "\u6d59\u6c5f\u9f99\u76db", 
+                "price": 12.81
+            }, 
+            "600485.XSHG": {
+                "amount": 100.0, 
+                "name": "\u4fe1\u5a01\u96c6\u56e2", 
+                "price": 23.39
+            }, 
+            "601111.XSHG": {
+                "amount": 200.0, 
+                "name": "\u4e2d\u56fd\u56fd\u822a", 
+                "price": 8.36
+            }, 
+            "601857.XSHG": {
+                "amount": 200.0, 
+                "name": "\u4e2d\u56fd\u77f3\u6cb9", 
+                "price": 8.41
+            }
+        }, 
+        "value": 23395.0
+    }, 
+    "2015-12-02": {
+        "cash": 4240.0, 
+        "securities": {
+            "000709.XSHE": {
+                "amount": 600.0, 
+                "name": "\u6cb3\u5317\u94a2\u94c1", 
+                "price": 3.28
+            }, 
+            "002081.XSHE": {
+                "amount": 100.0, 
+                "name": "\u91d1\u87b3\u8782", 
+                "price": 16.94
+            }, 
+            "002241.XSHE": {
+                "amount": 100.0, 
+                "name": "\u6b4c\u5c14\u58f0\u5b66", 
+                "price": 31.85
+            }, 
+            "002375.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e9a\u53a6\u80a1\u4efd", 
+                "price": 16.24
+            }, 
+            "600352.XSHG": {
+                "amount": 200.0, 
+                "name": "\u6d59\u6c5f\u9f99\u76db", 
+                "price": 12.96
+            }, 
+            "600485.XSHG": {
+                "amount": 100.0, 
+                "name": "\u4fe1\u5a01\u96c6\u56e2", 
+                "price": 23.16
+            }, 
+            "600873.XSHG": {
+                "amount": 300.0, 
+                "name": "\u6885\u82b1\u751f\u7269", 
+                "price": 8.81
+            }, 
+            "601111.XSHG": {
+                "amount": 200.0, 
+                "name": "\u4e2d\u56fd\u56fd\u822a", 
+                "price": 8.6
+            }, 
+            "601857.XSHG": {
+                "amount": 200.0, 
+                "name": "\u4e2d\u56fd\u77f3\u6cb9", 
+                "price": 8.64
+            }
+        }, 
+        "value": 23710.0
+    }, 
+    "2015-12-03": {
+        "cash": 4240.0, 
+        "securities": {
+            "000709.XSHE": {
+                "amount": 600.0, 
+                "name": "\u6cb3\u5317\u94a2\u94c1", 
+                "price": 3.29
+            }, 
+            "002081.XSHE": {
+                "amount": 100.0, 
+                "name": "\u91d1\u87b3\u8782", 
+                "price": 17.04
+            }, 
+            "002241.XSHE": {
+                "amount": 100.0, 
+                "name": "\u6b4c\u5c14\u58f0\u5b66", 
+                "price": 33.24
+            }, 
+            "002375.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e9a\u53a6\u80a1\u4efd", 
+                "price": 16.44
+            }, 
+            "600352.XSHG": {
+                "amount": 200.0, 
+                "name": "\u6d59\u6c5f\u9f99\u76db", 
+                "price": 12.86
+            }, 
+            "600485.XSHG": {
+                "amount": 100.0, 
+                "name": "\u4fe1\u5a01\u96c6\u56e2", 
+                "price": 24.04
+            }, 
+            "600873.XSHG": {
+                "amount": 300.0, 
+                "name": "\u6885\u82b1\u751f\u7269", 
+                "price": 8.84
+            }, 
+            "601111.XSHG": {
+                "amount": 200.0, 
+                "name": "\u4e2d\u56fd\u56fd\u822a", 
+                "price": 8.63
+            }, 
+            "601857.XSHG": {
+                "amount": 200.0, 
+                "name": "\u4e2d\u56fd\u77f3\u6cb9", 
+                "price": 8.82
+            }
+        }, 
+        "value": 24004.0
+    }, 
+    "2015-12-04": {
+        "cash": 4240.0, 
+        "securities": {
+            "000709.XSHE": {
+                "amount": 600.0, 
+                "name": "\u6cb3\u5317\u94a2\u94c1", 
+                "price": 3.18
+            }, 
+            "002081.XSHE": {
+                "amount": 100.0, 
+                "name": "\u91d1\u87b3\u8782", 
+                "price": 16.76
+            }, 
+            "002241.XSHE": {
+                "amount": 100.0, 
+                "name": "\u6b4c\u5c14\u58f0\u5b66", 
+                "price": 32.05
+            }, 
+            "002375.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e9a\u53a6\u80a1\u4efd", 
+                "price": 15.88
+            }, 
+            "600352.XSHG": {
+                "amount": 200.0, 
+                "name": "\u6d59\u6c5f\u9f99\u76db", 
+                "price": 12.55
+            }, 
+            "600485.XSHG": {
+                "amount": 100.0, 
+                "name": "\u4fe1\u5a01\u96c6\u56e2", 
+                "price": 24.18
+            }, 
+            "600873.XSHG": {
+                "amount": 300.0, 
+                "name": "\u6885\u82b1\u751f\u7269", 
+                "price": 8.77
+            }, 
+            "601111.XSHG": {
+                "amount": 200.0, 
+                "name": "\u4e2d\u56fd\u56fd\u822a", 
+                "price": 8.31
+            }, 
+            "601857.XSHG": {
+                "amount": 200.0, 
+                "name": "\u4e2d\u56fd\u77f3\u6cb9", 
+                "price": 8.58
+            }
+        }, 
+        "value": 23554.0
+    }, 
+    "2015-12-07": {
+        "cash": 12650.0, 
+        "securities": {
+            "000402.XSHE": {
+                "amount": 200.0, 
+                "name": "\u91d1\u878d\u8857", 
+                "price": 12.53
+            }, 
+            "002241.XSHE": {
+                "amount": 100.0, 
+                "name": "\u6b4c\u5c14\u58f0\u5b66", 
+                "price": 31.4
+            }, 
+            "600352.XSHG": {
+                "amount": 200.0, 
+                "name": "\u6d59\u6c5f\u9f99\u76db", 
+                "price": 12.77
+            }, 
+            "600873.XSHG": {
+                "amount": 300.0, 
+                "name": "\u6885\u82b1\u751f\u7269", 
+                "price": 8.89
+            }
+        }, 
+        "value": 23517.0
+    }, 
+    "2015-12-08": {
+        "cash": 12650.0, 
+        "securities": {
+            "000402.XSHE": {
+                "amount": 200.0, 
+                "name": "\u91d1\u878d\u8857", 
+                "price": 11.73
+            }, 
+            "002241.XSHE": {
+                "amount": 100.0, 
+                "name": "\u6b4c\u5c14\u58f0\u5b66", 
+                "price": 31.4
+            }, 
+            "600352.XSHG": {
+                "amount": 200.0, 
+                "name": "\u6d59\u6c5f\u9f99\u76db", 
+                "price": 12.06
+            }, 
+            "600873.XSHG": {
+                "amount": 300.0, 
+                "name": "\u6885\u82b1\u751f\u7269", 
+                "price": 8.58
+            }
+        }, 
+        "value": 23122.0
+    }, 
+    "2015-12-09": {
+        "cash": 6519.8, 
+        "securities": {
+            "000402.XSHE": {
+                "amount": 200.0, 
+                "name": "\u91d1\u878d\u8857", 
+                "price": 11.9
+            }, 
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 24.94
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.64
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 10.95
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 7.93
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.35
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.75
+            }
+        }, 
+        "value": 23084.8
+    }, 
+    "2015-12-10": {
+        "cash": 6519.8, 
+        "securities": {
+            "000402.XSHE": {
+                "amount": 200.0, 
+                "name": "\u91d1\u878d\u8857", 
+                "price": 11.31
+            }, 
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 23.94
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.45
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 11.13
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 7.81
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.3
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.47
+            }
+        }, 
+        "value": 22710.8
+    }, 
+    "2015-12-11": {
+        "cash": 6519.8, 
+        "securities": {
+            "000402.XSHE": {
+                "amount": 200.0, 
+                "name": "\u91d1\u878d\u8857", 
+                "price": 11.43
+            }, 
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 24.15
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.35
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 12.24
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 7.72
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.23
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.41
+            }
+        }, 
+        "value": 22881.8
+    }, 
+    "2015-12-14": {
+        "cash": 5748.9, 
+        "securities": {
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 24.37
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.72
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 13.46
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 7.98
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.41
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 15.93
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.9
+            }
+        }, 
+        "value": 23666.9
+    }, 
+    "2015-12-15": {
+        "cash": 5748.9, 
+        "securities": {
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 24.31
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.57
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 13.51
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 7.91
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.36
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 16.11
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.88
+            }
+        }, 
+        "value": 23619.9
+    }, 
+    "2015-12-16": {
+        "cash": 5748.9, 
+        "securities": {
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 24.65
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.49
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 14.4
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 7.81
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.29
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 16.11
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.74
+            }
+        }, 
+        "value": 23714.9
+    }, 
+    "2015-12-17": {
+        "cash": 5748.9, 
+        "securities": {
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 24.96
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.64
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 14.25
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 8.11
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.5
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 16.73
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.88
+            }
+        }, 
+        "value": 24079.9
+    }, 
+    "2015-12-18": {
+        "cash": 5748.9, 
+        "securities": {
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 24.93
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.78
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 14.77
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 8.75
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.85
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 16.45
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.83
+            }
+        }, 
+        "value": 24448.9
+    }, 
+    "2015-12-21": {
+        "cash": 5748.9, 
+        "securities": {
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 25.14
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.85
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 15.3
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 9.15
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 8.04
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 16.65
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 10.04
+            }
+        }, 
+        "value": 24876.9
+    }, 
+    "2015-12-22": {
+        "cash": 5748.9, 
+        "securities": {
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 25.25
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.85
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 15.13
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 9.15
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.99
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 17.23
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.96
+            }
+        }, 
+        "value": 24930.9
+    }, 
+    "2015-12-23": {
+        "cash": 5748.9, 
+        "securities": {
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 24.71
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.8
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 14.75
+            }, 
+            "600029.XSHG": {
+                "amount": 300.0, 
+                "name": "\u5357\u65b9\u822a\u7a7a", 
+                "price": 8.96
+            }, 
+            "600115.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e1c\u65b9\u822a\u7a7a", 
+                "price": 7.83
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 16.62
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.83
+            }
+        }, 
+        "value": 24519.9
+    }, 
+    "2015-12-24": {
+        "cash": 10702.2, 
+        "securities": {
+            "000768.XSHE": {
+                "amount": 100.0, 
+                "name": "\u4e2d\u822a\u98de\u673a", 
+                "price": 24.17
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.65
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 14.8
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 16.42
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.64
+            }
+        }, 
+        "value": 24250.2
+    }, 
+    "2015-12-25": {
+        "cash": 13124.75, 
+        "securities": {
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.7
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 15.2
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 16.45
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.73
+            }
+        }, 
+        "value": 24383.75
+    }, 
+    "2015-12-28": {
+        "cash": 10399.75, 
+        "securities": {
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.51
+            }, 
+            "000792.XSHE": {
+                "amount": 100.0, 
+                "name": "\u76d0\u6e56\u80a1\u4efd", 
+                "price": 26.8
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 14.4
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 15.99
+            }, 
+            "601989.XSHG": {
+                "amount": 300.0, 
+                "name": "\u4e2d\u56fd\u91cd\u5de5", 
+                "price": 9.42
+            }
+        }, 
+        "value": 23936.75
+    }, 
+    "2015-12-29": {
+        "cash": 2689.57, 
+        "securities": {
+            "000061.XSHE": {
+                "amount": 100.0, 
+                "name": "\u519c\u4ea7\u54c1", 
+                "price": 18.18
+            }, 
+            "000402.XSHE": {
+                "amount": 200.0, 
+                "name": "\u91d1\u878d\u8857", 
+                "price": 12.05
+            }, 
+            "000629.XSHE": {
+                "amount": 800.0, 
+                "name": "\u6500\u94a2\u9492\u949b", 
+                "price": 3.9
+            }, 
+            "000778.XSHE": {
+                "amount": 300.0, 
+                "name": "\u65b0\u5174\u94f8\u7ba1", 
+                "price": 6.54
+            }, 
+            "000792.XSHE": {
+                "amount": 100.0, 
+                "name": "\u76d0\u6e56\u80a1\u4efd", 
+                "price": 26.09
+            }, 
+            "000878.XSHE": {
+                "amount": 200.0, 
+                "name": "\u4e91\u5357\u94dc\u4e1a", 
+                "price": 14.32
+            }, 
+            "600718.XSHG": {
+                "amount": 100.0, 
+                "name": "\u4e1c\u8f6f\u96c6\u56e2", 
+                "price": 32.66
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 15.96
+            }
+        }, 
+        "value": 23930.57
+    }, 
+    "2015-12-30": {
+        "cash": 7559.41, 
+        "securities": {
+            "000061.XSHE": {
+                "amount": 100.0, 
+                "name": "\u519c\u4ea7\u54c1", 
+                "price": 18.51
+            }, 
+            "000402.XSHE": {
+                "amount": 200.0, 
+                "name": "\u91d1\u878d\u8857", 
+                "price": 12.14
+            }, 
+            "000629.XSHE": {
+                "amount": 800.0, 
+                "name": "\u6500\u94a2\u9492\u949b", 
+                "price": 3.77
+            }, 
+            "000792.XSHE": {
+                "amount": 100.0, 
+                "name": "\u76d0\u6e56\u80a1\u4efd", 
+                "price": 25.8
+            }, 
+            "600718.XSHG": {
+                "amount": 100.0, 
+                "name": "\u4e1c\u8f6f\u96c6\u56e2", 
+                "price": 32.52
+            }, 
+            "601016.XSHG": {
+                "amount": 200.0, 
+                "name": "\u8282\u80fd\u98ce\u7535", 
+                "price": 15.98
+            }
+        }, 
+        "value": 23882.41
+    }, 
+    "2015-12-31": {
+        "cash": 10758.37, 
+        "securities": {
+            "000061.XSHE": {
+                "amount": 100.0, 
+                "name": "\u519c\u4ea7\u54c1", 
+                "price": 17.69
+            }, 
+            "000402.XSHE": {
+                "amount": 200.0, 
+                "name": "\u91d1\u878d\u8857", 
+                "price": 11.53
+            }, 
+            "000629.XSHE": {
+                "amount": 800.0, 
+                "name": "\u6500\u94a2\u9492\u949b", 
+                "price": 3.67
+            }, 
+            "000792.XSHE": {
+                "amount": 100.0, 
+                "name": "\u76d0\u6e56\u80a1\u4efd", 
+                "price": 25.68
+            }, 
+            "600718.XSHG": {
+                "amount": 100.0, 
+                "name": "\u4e1c\u8f6f\u96c6\u56e2", 
+                "price": 31.05
+            }
+        }, 
+        "value": 23442.37
+    }
+}
