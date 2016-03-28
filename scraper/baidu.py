@@ -25,7 +25,7 @@ BASEURL_DAILY = "http://gupiao.baidu.com/api/stocks/stockdaybar?from=pc&os_ver=1
 
 def sec_id_mapping(sec_id):
     """map standard sec_id to the form baidu url uses"""
-    
+
     if sec_id.endswith('.XSHG'):
         return 'sh' + sec_id[:6]
     else:
@@ -44,26 +44,26 @@ def complete_daily_url(date, n, sec_id):
 
 def date_mapping(date):
     """map date from baidu url to standard form"""
-    
+
     return '{}-{}-{}'.format(date // 10000, (date % 10000) // 100, date % 100)
 
 
 def time_mapping(time):
     """map time (minute bar) from baidu url to standard form"""
-    
+
     time //= 100000
     hour, minute = divmod(time, 100)
-    
+
     if hour < 10:
         hour = '0' + str(hour)
     else:
         hour = str(hour)
-    
+
     if minute < 10:
         minute = '0' + str(minute)
     else:
         minute = str(minute)
-    
+
     return '{}:{}'.format(hour, minute)
 
 
@@ -72,7 +72,7 @@ def parse_url_for_intraday_data(url):
         html = urlopen(url)
     except:
         raise ValueError("Cannot open {}".format(url))
-    
+
     try:
         info = json.load(html)
     except:
@@ -86,8 +86,13 @@ def parse_url_for_intraday_data(url):
     else:
         open_minute = open_minute[-1]
 
-    last_minute = datetime.datetime.now().strftime("%H:%M")
-    trading_minutes = [m for m in TRADING_MINUTES if m <= last_minute]
+    now = datetime.datetime.now()
+    last_minute = now.strftime("%H:%M")
+    if now.second < 30:
+        trading_minutes = [m for m in TRADING_MINUTES if m < last_minute]
+    else:
+        trading_minutes = [m for m in TRADING_MINUTES if m <= last_minute]
+
     for i, m in enumerate(trading_minutes):
         if m not in market_data_raw:
             if i == 0:
@@ -102,7 +107,7 @@ def parse_url_for_intraday_data(url):
 def load_intraday_data(universe):
     """all sec_ids in universe are in standard form"""
 
-    data = {}    
+    data = {}
     for sec in universe:
         url = complete_intraday_url(sec_id_mapping(sec))
         data[sec] = parse_url_for_intraday_data(url)
