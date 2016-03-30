@@ -68,6 +68,8 @@ def time_mapping(time):
 
 
 def parse_url_for_intraday_data(url):
+    """return preClose and timeline"""
+
     try:
         html = urlopen(url)
     except:
@@ -78,9 +80,10 @@ def parse_url_for_intraday_data(url):
     except:
         raise ValueError("Wrond data format at {}".format(url))
 
-    market_data_raw = {time_mapping(snapshot['time']): snapshot['price'] for snapshot in info['timeLine']}
+    pre_close = info["preClose"]
+    timeline_raw = {time_mapping(snapshot['time']): snapshot['price'] for snapshot in info['timeLine']}
 
-    open_minute = [m for m in market_data_raw if m <= "09:30"]
+    open_minute = [m for m in timeline_raw if m <= "09:30"]
     if not open_minute:
         raise ValueError("Open minute missing!")
     else:
@@ -94,14 +97,14 @@ def parse_url_for_intraday_data(url):
         trading_minutes = [m for m in TRADING_MINUTES if m <= last_minute]
 
     for i, m in enumerate(trading_minutes):
-        if m not in market_data_raw:
+        if m not in timeline_raw:
             if i == 0:
-                market_data_raw[m] = market_data_raw[open_minute]
+                timeline_raw[m] = timeline_raw[open_minute]
             else:
-                market_data_raw[m] = market_data_raw[trading_minutes[i-1]]
+                timeline_raw[m] = timeline_raw[trading_minutes[i-1]]
 
-    market_data = [market_data_raw[m] for m in trading_minutes]
-    return market_data
+    timeline = [timeline_raw[m] for m in trading_minutes]
+    return {'pre_close': pre_close, 'timeline': timeline}
 
 
 def load_intraday_data(universe):

@@ -66,6 +66,10 @@ class Positions(object):
             f.write(json.dumps(month_pos, sort_keys=True, indent=4))
             f.close()
 
+    @property
+    def history_values(self):
+        return [str(self._history_positions[date]['value']) for date in self._trading_days]
+
 
 if __name__ == "__main__":
     pos = Positions()

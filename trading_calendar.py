@@ -32,6 +32,6 @@ def get_all_trading_minutes():
 if __name__ == "__main__":
     TRADING_DAYS = get_all_trading_days()
     print "Trading Days: from {} to {}".format(TRADING_DAYS[0], TRADING_DAYS[-1])
-    
+
     TRADING_MINUTES = get_all_trading_minutes()
     print "Trading Minutes: from {} to {}".format(TRADING_MINUTES[0], TRADING_MINUTES[-1])
