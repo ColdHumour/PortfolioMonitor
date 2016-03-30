@@ -4,13 +4,15 @@
 baidu.py
 
 market data scraper from baidu
+
+function list:
+    load_intraday_data
 """
 
 
 import datetime
 import json
 from urllib import urlopen
-# from bs4 import BeautifulSoup
 
 from .. trading_calendar import get_all_trading_minutes
 TRADING_MINUTES = get_all_trading_minutes()
@@ -78,7 +80,7 @@ def parse_url_for_intraday_data(url):
     try:
         info = json.load(html)
     except:
-        raise ValueError("Wrond data format at {}".format(url))
+        raise ValueError("Wrong data format at {}".format(url))
 
     pre_close = info["preClose"]
     timeline_raw = {time_mapping(snapshot['time']): snapshot['price'] for snapshot in info['timeLine']}

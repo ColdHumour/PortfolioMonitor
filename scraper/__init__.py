@@ -10,4 +10,5 @@ data scraper module initialize
 
 from . import (
     baidu,
+    sina,
 )

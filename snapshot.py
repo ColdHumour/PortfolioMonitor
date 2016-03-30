@@ -63,7 +63,7 @@ class Snapshot(object):
 
     def draw_timeline(self):
         fig = plt.figure(figsize=(14, 7))
-        ax = fig.add_subplot(111)
+        ax = fig.add_subplot(111, axisbg='white')
 
         xseries = range(len(TRADING_MINUTES))
         pct = lambda x, _: '{0:1.1f}%'.format(100*x)
