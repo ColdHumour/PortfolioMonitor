@@ -7,6 +7,8 @@ market data scraper from baidu
 
 function list:
     load_intraday_data
+    load_daily_close_prices
+    load_crossectional_close_prices
 """
 
 
@@ -14,7 +16,13 @@ import datetime
 import json
 from urllib import urlopen
 
-from .. trading_calendar import get_all_trading_minutes
+from .. log import logger
+from .. trading_calendar import (
+    get_trading_days,
+    get_all_trading_days,
+    get_all_trading_minutes,
+)
+
 TRADING_MINUTES = get_all_trading_minutes()
 
 
@@ -22,7 +30,7 @@ TRADING_MINUTES = get_all_trading_minutes()
 BASEURL_INTRADAY = "http://gupiao.baidu.com/api/stocks/stocktimeline?from=pc&os_ver=1&cuid=xxx&vv=100&format=json&stock_code={sec_id}"
 
 # 从该股票某个交易日往前数若干天（包含当日）的日线数据，如果停牌则跳过
-BASEURL_DAILY = "http://gupiao.baidu.com/api/stocks/stockdaybar?from=pc&os_ver=1&cuid=xxx&vv=100&format=json&stock_code={sec_id}&start={date}&count={bar_amount}&fq_type=no"
+BASEURL_DAILY = "http://gupiao.baidu.com/api/stocks/stockdaybar?from=pc&os_ver=1&cuid=xxx&vv=100&format=json&stock_code={sec_id}&start={date}&count={bar_amount}&fq_type={fq_type}"
 
 
 def sec_id_mapping(sec_id):
@@ -38,16 +46,35 @@ def complete_intraday_url(sec_id):
     return BASEURL_INTRADAY.format(sec_id=sec_id)
 
 
-def complete_daily_url(date, n, sec_id):
-    """daily data of sec_id: n tradings days before date (include date)"""
+def complete_daily_url(sec_id, date='', n=1, fq_type='no'):
+    """
+    daily data of sec_id: n tradings days before date (include date)
+    sec_id: vis sec_id_mapping
+    date: 'YYYY-MM-DD', default current date
+    n: integer
+    fq_type: ['no', 'front', 'back']
+    """
 
-    return BASEURL_DAILY.format(date=date, bar_amount=n, sec_id=sec_id)
+    return BASEURL_DAILY.format(sec_id=sec_id, date=date, bar_amount=n, fq_type=fq_type)
 
 
 def date_mapping(date):
     """map date from baidu url to standard form"""
 
-    return '{}-{}-{}'.format(date // 10000, (date % 10000) // 100, date % 100)
+    year, date = divmod(date, 10000)
+    month, date = divmod(date, 100)
+
+    if month < 10:
+        month = '0' + str(month)
+    else:
+        month = str(month)
+
+    if date < 10:
+        date = '0' + str(date)
+    else:
+        date = str(date)
+
+    return '{}-{}-{}'.format(year, month, date)
 
 
 def time_mapping(time):
@@ -72,6 +99,8 @@ def time_mapping(time):
 def parse_url_for_intraday_data(url):
     """return preClose and timeline"""
 
+    logger.info("get \"{}\"".format(url))
+
     try:
         html = urlopen(url)
     except:
@@ -83,13 +112,32 @@ def parse_url_for_intraday_data(url):
         raise ValueError("Wrong data format at {}".format(url))
 
     pre_close = info["preClose"]
-    timeline_raw = {time_mapping(snapshot['time']): snapshot['price'] for snapshot in info['timeLine']}
+    timeline = {time_mapping(snapshot['time']): snapshot['price'] for snapshot in info['timeLine']}
 
-    open_minute = [m for m in timeline_raw if m <= "09:30"]
-    if not open_minute:
-        raise ValueError("Open minute missing!")
-    else:
-        open_minute = open_minute[-1]
+    return {'pre_close': pre_close, 'timeline': timeline}
+
+
+def parse_url_for_daily_close_prices(url):
+    """return daily close price series"""
+
+    logger.info("get \"{}\"".format(url))
+
+    try:
+        html = urlopen(url)
+    except:
+        raise ValueError("Cannot open {}".format(url))
+
+    try:
+        info = json.load(html)
+    except:
+        raise ValueError("Wrong data format at {}".format(url))
+
+    timeline = {date_mapping(snapshot['date']): snapshot['kline']['close'] for snapshot in info['mashData']}
+    return {"close_price": timeline}
+
+
+def load_intraday_data(universe):
+    """all sec_ids in universe are in standard form"""
 
     now = datetime.datetime.now()
     last_minute = now.strftime("%H:%M")
@@ -98,22 +146,68 @@ def parse_url_for_intraday_data(url):
     else:
         trading_minutes = [m for m in TRADING_MINUTES if m <= last_minute]
 
-    for i, m in enumerate(trading_minutes):
-        if m not in timeline_raw:
-            if i == 0:
-                timeline_raw[m] = timeline_raw[open_minute]
-            else:
-                timeline_raw[m] = timeline_raw[trading_minutes[i-1]]
-
-    timeline = [timeline_raw[m] for m in trading_minutes]
-    return {'pre_close': pre_close, 'timeline': timeline}
-
-
-def load_intraday_data(universe):
-    """all sec_ids in universe are in standard form"""
-
-    data = {}
+    data_all = {}
     for sec in universe:
         url = complete_intraday_url(sec_id_mapping(sec))
-        data[sec] = parse_url_for_intraday_data(url)
-    return data
+        data = parse_url_for_intraday_data(url)
+        timeline_raw = data['timeline']
+
+        open_minute = [m for m in timeline_raw if m <= "09:30"]
+        if not open_minute:
+            raise ValueError("Open minute missing!")
+        else:
+            open_minute = open_minute[-1]
+
+        for i, m in enumerate(trading_minutes):
+            if m not in timeline_raw:
+                if i == 0:
+                    timeline_raw[m] = timeline_raw[open_minute]
+                else:
+                    timeline_raw[m] = timeline_raw[trading_minutes[i-1]]
+
+        data['timeline'] = [timeline_raw[m] for m in trading_minutes]
+        data_all[sec] = data
+    return data_all
+
+
+def load_daily_close_prices(universe, start, end):
+    """load daily history data for single security"""
+
+    trading_days = get_trading_days(start, end)
+    n = len(trading_days)
+
+    if n > 500:
+        raise ValueError("Too many trading days between {} and {}!".format(start, end))
+
+    data_all = {}
+    for sec in universe:
+        url = complete_daily_url(sec_id=sec_id_mapping(sec),
+                                 date=end.replace('-', ''),
+                                 n=n)
+        data = parse_url_for_daily_close_prices(url)
+        timeline_raw = data["close_price"]
+
+        for i, date in enumerate(trading_days):
+            if date not in timeline_raw:
+                timeline_raw[date] = timeline_raw[trading_days[i-1]]
+
+        data["close_price"] = [timeline_raw[date] for date in trading_days]
+        data_all[sec] = data["close_price"]
+    return data_all
+
+
+def load_crossectional_close_prices(universe, date):
+    """load daily history data for single security"""
+
+    trading_days_all = get_all_trading_days()
+    if date not in trading_days_all:
+        raise ValueError("{} is not in trading days!".format(date))
+
+    data_all = {}
+    for sec in universe:
+        url = complete_daily_url(sec_id=sec_id_mapping(sec),
+                                 date=date.replace('-', ''),
+                                 n=1)
+        data = parse_url_for_daily_close_prices(url)
+        data_all[sec] = data["close_price"].values()[0]
+    return data_all

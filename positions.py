@@ -42,16 +42,16 @@ class Positions(object):
         self._current_position = position
 
     def save_current_position(self):
-        if self._current_date not in self._history_positions:
-            self._history_positions[self._current_date] = self._current_position
+        self._history_positions[self._current_date] = self._current_position
+        if self._current_date != self._trading_days[-1]:
             self._trading_days.append(self._current_date)
 
-            month = self._current_date[:7]
-            month_json = "{}.json".format(month)
-            month_pos = {date: self._history_positions[k] for date in self._trading_days if date[:7] == month}
-            f = open(os.path.join(POSITION_DB_PATH, month_json), 'w')
-            f.write(json.dumps(month_pos, sort_keys=True, indent=4))
-            f.close()
+        month = self._current_date[:7]
+        month_json = "{}.json".format(month)
+        month_pos = {date: self._history_positions[date] for date in self._trading_days if date[:7] == month}
+        f = open(os.path.join(POSITION_DB_PATH, month_json), 'w')
+        f.write(json.dumps(month_pos, sort_keys=True, indent=4))
+        f.close()
 
     def save_all(self):
         if self._current_date is not None and self._current_date not in self._history_positions:

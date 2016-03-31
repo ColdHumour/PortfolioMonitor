@@ -14,12 +14,14 @@ from matplotlib import pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
 from . scraper.baidu import load_intraday_data
+from log import logger
 from trading_calendar import get_all_trading_minutes
 TRADING_MINUTES = get_all_trading_minutes()
 
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 TEMP_PATH = os.path.join(MODULE_PATH, 'temp')
+SNAPSHOT_IMG_FILE = os.path.join(TEMP_PATH, 'snapshot.jpg')
 
 
 class Snapshot(object):
@@ -85,11 +87,13 @@ class Snapshot(object):
         ax.grid(True)
         ax.legend(loc=2, prop={'size': 15})
 
-        plt.savefig(os.path.join(TEMP_PATH, 'snapshot.jpg'))
+        plt.savefig(SNAPSHOT_IMG_FILE)
         plt.close(fig)
+
+        logger.info("./temp/snapshot.jpg has been saved")
 
     def latest_snapshot(self):
         pass
 
     def latest_position(self):
-        return self._pos_dict
+        return self._position

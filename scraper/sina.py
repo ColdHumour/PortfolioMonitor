@@ -54,6 +54,6 @@ def load_sec_shortname(universe):
 
     data = {}
     for sec in universe:
-        url = complete_intraday_url(sec_id_mapping(sec))
+        url = complete_url(sec_id_mapping(sec))
         data[sec] = parse_url_for_shortname(url)
     return data
