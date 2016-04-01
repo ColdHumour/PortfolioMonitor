@@ -8,7 +8,5 @@ data scraper module initialize
 @author: yudi.wu
 """
 
-from . import (
-    baidu,
-    sina,
-)
+import baidu
+import sina

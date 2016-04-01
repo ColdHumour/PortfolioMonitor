@@ -9,10 +9,8 @@ log.py
 import os
 import logging
 import logging.handlers
+from . path import LOG_FILE
 
-
-MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
-LOG_FILE = os.path.join(MODULE_PATH, 'temp', 'server.log')
 
 logger = logging.Logger("APIServer")
 logger.setLevel(logging.INFO)

@@ -3,7 +3,7 @@
 """
 positions.py
 
-positions class use info in posdb, storing data in json format
+Class Positions loads info in posdb, which stores data in json format.
 
 @author: yudi.wu
 """
@@ -12,9 +12,7 @@ import os
 import json
 import pandas as pd
 
-
-MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
-POSITION_DB_PATH = os.path.join(MODULE_PATH, 'posdb')
+from utils.path import POSITION_DB_PATH
 
 
 class Positions(object):
@@ -36,6 +34,17 @@ class Positions(object):
             month_pos = json.load(file(os.path.join(POSITION_DB_PATH, month_json)))
             self._history_positions.update(month_pos)
         self._trading_days = sorted(self._history_positions)
+
+    def get_position(self, date):
+        return self._history_positions.get(date, {})
+
+    def get_current_position(self):
+        return self._current_position
+
+    def set_info(self, date, position, is_new_date=True):
+        self._history_positions[date] = position
+        if is_new_date:
+            self._trading_days = sorted(self._history_positions)
 
     def set_current_info(self, date, position):
         self._current_date = date
@@ -68,7 +77,7 @@ class Positions(object):
 
     @property
     def history_values(self):
-        return [str(self._history_positions[date]['value']) for date in self._trading_days]
+        return [self._history_positions[date]['value'] for date in self._trading_days]
 
 
 if __name__ == "__main__":

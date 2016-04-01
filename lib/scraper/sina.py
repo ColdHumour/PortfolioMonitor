@@ -12,6 +12,8 @@ function list:
 import re
 from urllib import urlopen
 
+from .. utils.log import logger
+
 
 # 当前最新的成交信息
 BASEURL_SNAPSHOT = "http://hq.sinajs.cn/list={sec_id}"

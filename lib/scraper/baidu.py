@@ -16,20 +16,19 @@ import datetime
 import json
 from urllib import urlopen
 
-from .. log import logger
-from .. trading_calendar import (
+from .. utils.log import logger
+from .. utils.trading_calendar import (
+    TRADING_DAYS_ALL,
+    TRADING_DAYS_DICT,
+    TRADING_MINUTES,
     get_trading_days,
-    get_all_trading_days,
-    get_all_trading_minutes,
 )
-
-TRADING_MINUTES = get_all_trading_minutes()
 
 
 # 当日所有分钟线数据，应该是从ticker计算出来的，有缺失
 BASEURL_INTRADAY = "http://gupiao.baidu.com/api/stocks/stocktimeline?from=pc&os_ver=1&cuid=xxx&vv=100&format=json&stock_code={sec_id}"
 
-# 从该股票某个交易日往前数若干天（包含当日）的日线数据，如果停牌则跳过
+# 从该股票某个交易日往前数若干天（不包含当日）的日线数据，如果停牌则跳过
 BASEURL_DAILY = "http://gupiao.baidu.com/api/stocks/stockdaybar?from=pc&os_ver=1&cuid=xxx&vv=100&format=json&stock_code={sec_id}&start={date}&count={bar_amount}&fq_type={fq_type}"
 
 
@@ -176,6 +175,9 @@ def load_daily_close_prices(universe, start, end):
     trading_days = get_trading_days(start, end)
     n = len(trading_days)
 
+    i_end = TRADING_DAYS_DICT[end]
+    end = TRADING_DAYS_ALL[i_end+1]
+
     if n > 500:
         raise ValueError("Too many trading days between {} and {}!".format(start, end))
 
@@ -199,9 +201,11 @@ def load_daily_close_prices(universe, start, end):
 def load_crossectional_close_prices(universe, date):
     """load daily history data for single security"""
 
-    trading_days_all = get_all_trading_days()
-    if date not in trading_days_all:
+    if date not in TRADING_DAYS_DICT:
         raise ValueError("{} is not in trading days!".format(date))
+
+    i_date = TRADING_DAYS_DICT[date]
+    date = TRADING_DAYS_ALL[i_date+1]
 
     data_all = {}
     for sec in universe:

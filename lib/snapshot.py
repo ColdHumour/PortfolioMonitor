@@ -3,25 +3,23 @@
 """
 snapshot.py
 
-class Snapshot to load realtime data of given universe
+Class Snapshot to load realtime data of given universe.
 
 @author: yudi.wu
 """
 
 import os
 import numpy as np
-from matplotlib import pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 
-from . scraper.baidu import load_intraday_data
-from log import logger
-from trading_calendar import get_all_trading_minutes
+from scraper.baidu import load_intraday_data
+from utils.log import logger
+from utils.path import SNAPSHOT_IMG_FILE
+from utils.trading_calendar import get_all_trading_minutes
+
 TRADING_MINUTES = get_all_trading_minutes()
-
-
-MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
-TEMP_PATH = os.path.join(MODULE_PATH, 'temp')
-SNAPSHOT_IMG_FILE = os.path.join(TEMP_PATH, 'snapshot.jpg')
 
 
 class Snapshot(object):
@@ -64,13 +62,14 @@ class Snapshot(object):
         self._portfolio_timeline += [np.nan] * (241 - d)
 
     def draw_timeline(self):
-        fig = plt.figure(figsize=(14, 7))
+        fig = Figure(figsize=(8, 4))
+        canvas = FigureCanvas(fig)
         ax = fig.add_subplot(111, axisbg='white')
 
         xseries = range(len(TRADING_MINUTES))
         pct = lambda x, _: '{0:1.1f}%'.format(100*x)
-        xseries_show = xseries[::15]
-        xlabels_show = TRADING_MINUTES[::15]
+        xseries_show = xseries[::30]
+        xlabels_show = TRADING_MINUTES[::30]
 
         ax.clear()
         ax.plot(xseries, self._portfolio_timeline, label='portfolio', linewidth=1.0, color='r')
@@ -78,17 +77,16 @@ class Snapshot(object):
 
         ax.yaxis.set_major_formatter(FuncFormatter(pct))
         for item in ax.get_yticklabels():
-            item.set_size(13)
+            item.set_size(10)
 
         ax.set_xlim(0, 240)
         ax.set_xticks(xseries_show)
-        ax.set_xticklabels(xlabels_show, fontsize=13)
+        ax.set_xticklabels(xlabels_show, fontsize=10)
 
         ax.grid(True)
-        ax.legend(loc=2, prop={'size': 15})
+        ax.legend(loc=2, prop={'size': 12})
 
-        plt.savefig(SNAPSHOT_IMG_FILE)
-        plt.close(fig)
+        fig.savefig(SNAPSHOT_IMG_FILE)
 
         logger.info("./temp/snapshot.jpg has been saved")
 
