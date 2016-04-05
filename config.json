@@ -1,3 +1,4 @@
 {
-    "benchmark": "000300.XSHG"
+    "benchmark": "000300.XSHG",
+    "loglevel": "INFO"
 }

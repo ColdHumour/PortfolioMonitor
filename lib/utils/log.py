@@ -6,20 +6,28 @@ log.py
 @author: yudi.wu
 """
 
-import os
+import json
 import logging
-import logging.handlers
-from . path import LOG_FILE
+from . path import LOG_FILE, CONFIG_FILE
+open(LOG_FILE, 'w').close()
 
 
-logger = logging.Logger("APIServer")
-logger.setLevel(logging.INFO)
+def set_logger(name, level):
+    logger = logging.Logger(name)
+    logger.setLevel(level)
 
-# set handler
-handler = logging.handlers.RotatingFileHandler(LOG_FILE, maxBytes=2048, backupCount=0)
-handler.setLevel(logging.INFO)
+    # set handler
+    handler = logging.FileHandler(LOG_FILE)
+    handler.setLevel(level)
 
-formatter = logging.Formatter('%(asctime)s [%(levelname)s] File:%(filename)s Line:%(lineno)d - %(message)s')
-handler.setFormatter(formatter)
+    # set formatter
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] File:%(filename)s Line:%(lineno)d - %(message)s')
+    handler.setFormatter(formatter)
 
-logger.addHandler(handler)
+    logger.addHandler(handler)
+    return logger
+
+
+config = json.load(file(CONFIG_FILE))
+loglevel = config["loglevel"]
+logger = set_logger("APIServer", getattr(logging, loglevel))

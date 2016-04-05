@@ -9,9 +9,9 @@ function list:
     load_sec_shortname
 """
 
+
 import re
 from urllib import urlopen
-
 from .. utils.log import logger
 
 
@@ -35,6 +35,8 @@ def complete_url(sec_id):
 def parse_url_for_shortname(url):
     """return preClose and timeline"""
 
+    logger.debug("get \"{}\"".format(url))
+    
     try:
         html = urlopen(url)
     except:
@@ -53,6 +55,8 @@ def parse_url_for_shortname(url):
 
 def load_sec_shortname(universe):
     """all sec_ids in universe are in standard form"""
+
+    logger.info("Loading shortnames of {}...".format(universe))
 
     data = {}
     for sec in universe:

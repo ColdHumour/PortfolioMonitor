@@ -8,39 +8,91 @@ Class Snapshot to load realtime data of given universe.
 @author: yudi.wu
 """
 
-import os
+import json
 import numpy as np
+from datetime import datetime
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 
-from scraper.baidu import load_intraday_data
+from scraper.baidu import load_latest_intraday_close_prices
 from utils.log import logger
-from utils.path import SNAPSHOT_IMG_FILE
-from utils.trading_calendar import get_all_trading_minutes
-
-TRADING_MINUTES = get_all_trading_minutes()
+from utils.path import SNAPSHOT_FILE, SNAPSHOT_IMG_FILE
+from utils.trading_calendar import (
+    get_trading_days_relatively,
+    TRADING_MINUTES
+)
 
 
 class Snapshot(object):
-    def __init__(self, benchmark, position):
+    def __init__(self, benchmark, position, is_trading_day=True):
         self._benchmark = benchmark
         self._position = position
         self._universe = set(position['securities'].keys()) | set([benchmark])
+        self._is_trading_day = is_trading_day
+
+        now = datetime.now()
+        self._today = now.strftime("%Y-%m-%d")
+        self._minute = now.strftime("%H:%M")
+        self._yesterday = get_trading_days_relatively(self._today, 0)[0]
 
         self._data = None
+        self._last_minute = None
+        self._benchmark_last_value = None
         self._benchmark_pre_close = None
         self._benchmark_timeline = []
+        self._portfolio_last_value = None
         self._portfolio_pre_close = None
         self._portfolio_timeline = []
-        self._last_snapshot = {}
+
+        self.load_data()
 
     def load_data(self):
-        self._data = load_intraday_data(self._universe)
+        logger.info("Loading snapshot data file...")
+        try:
+            data = json.load(file(SNAPSHOT_FILE))
+            if self._is_trading_day:
+                if self._minute < "09:30":
+                    assert data["date"] == self._yesterday
+                    assert data["minute"] == "15:00"
+                elif "11:30" < self._minute < "13:00":
+                    assert data["date"] == self._today
+                    assert data["minute"] == "11:30"
+                else:
+                    assert data["date"] == self._today
+                    assert data["minute"] == "15:00"
+            else:
+                assert data["date"] == self._yesterday
+                assert data["minute"] == "15:00"
+
+            assert data["benchmark"] == self._benchmark
+            assert data["position"]["cash"] == self._position["cash"]
+            assert sorted(data["position"]["securities"].keys()) == sorted(self._position["securities"].keys())
+
+            self._benchmark_last_value = data["benchmark_last_value"]
+            self._benchmark_pre_close = data["benchmark_pre_close"]
+            self._benchmark_timeline = data["benchmark_timeline"]
+            self._portfolio_last_value = data["portfolio_last_value"]
+            self._portfolio_pre_close = data["portfolio_pre_close"]
+            self._portfolio_timeline = data["portfolio_timeline"]
+            self._data = {sec: {"pre_close": data[sec]} for sec in self._position["securities"]}
+        except:
+            self.load_data_from_scraper()
+            self.draw_timeline()
+            if "11:30" < self._minute < "13:00" or self._minute > "15:00":
+                self.save()
+
+    def load_data_from_scraper(self):
+        logger.info("Downloading snapshot data through scraper...")
+
+        self._data = load_latest_intraday_close_prices(self._universe, self._is_trading_day)
+        logger.info("Successfully downloaded snapshot data!")
 
         self._benchmark_pre_close = self._data[self._benchmark]['pre_close']
         self._benchmark_timeline = self._data[self._benchmark]['timeline']
         d = len(self._benchmark_timeline)
+        self._last_minute = TRADING_MINUTES[d-1]
+        self._benchmark_last_value = self._benchmark_timeline[-1]
 
         self._portfolio_pre_close = self._position['cash']
         for sec, secinfo in self._position['securities'].iteritems():
@@ -54,6 +106,7 @@ class Snapshot(object):
                 v += secinfo['amount'] * self._data[sec]['timeline'][i]
             self._portfolio_timeline.append(v)
         self._position['value'] = v
+        self._portfolio_last_value = v
 
         self._benchmark_timeline = [v / self._benchmark_pre_close - 1 for v in self._benchmark_timeline]
         self._portfolio_timeline = [v / self._portfolio_pre_close - 1 for v in self._portfolio_timeline]
@@ -62,7 +115,7 @@ class Snapshot(object):
         self._portfolio_timeline += [np.nan] * (241 - d)
 
     def draw_timeline(self):
-        fig = Figure(figsize=(8, 4))
+        fig = Figure(figsize=(7, 3))
         canvas = FigureCanvas(fig)
         ax = fig.add_subplot(111, axisbg='white')
 
@@ -84,14 +137,85 @@ class Snapshot(object):
         ax.set_xticklabels(xlabels_show, fontsize=10)
 
         ax.grid(True)
-        ax.legend(loc=2, prop={'size': 12})
+        ax.legend(loc=2, prop={'size': 9})
 
+        fig.tight_layout()
         fig.savefig(SNAPSHOT_IMG_FILE)
+        logger.info("Snapshot image saved at ./static/temp/snapshot.jpg.")
 
-        logger.info("./temp/snapshot.jpg has been saved")
+    def save(self):
+        snapshot_info = {
+            "date": self._today,
+            "minute": self._minute,
+            "benchmark": self._benchmark,
+            "position": self._position,
+            "benchmark_last_value": self._benchmark_last_value,
+            "benchmark_pre_close": self._benchmark_pre_close,
+            "benchmark_timeline": self._benchmark_timeline,
+            "portfolio_last_value": self._portfolio_last_value,
+            "portfolio_pre_close": self._portfolio_pre_close,
+            "portfolio_timeline": self._portfolio_timeline,
+        }
 
-    def latest_snapshot(self):
-        pass
+        for sec in self._position["securities"]:
+            snapshot_info[sec] = self._data[sec]["pre_close"]
+
+        f = open(SNAPSHOT_FILE, 'w')
+        f.write(json.dumps(snapshot_info, sort_keys=True, indent=4))
+        f.close()
+        logger.info("Snapshot data saved at ./static/temp/snapshot.json.")
+
+    def update_position(self, new_position):
+        if self._is_trading_day and "09:30" <= self._minute <= "15:00":
+            self._position = new_position
+            self._universe = set(new_position['securities'].keys()) | set([benchmark])
+            self.load_data_from_scraper()
+            self.draw_timeline()
 
     def latest_position(self):
         return self._position
+
+    def latest_overall_info_in_html(self):
+        info_html = "<table id=\"overall\">"
+        info_html += "<tr><td id=\"time\">Time:&nbsp;{}</td><td></td><td></td><td></td></tr>".format(self._last_minute)
+
+        portfolio_ret = (self._portfolio_last_value / self._portfolio_pre_close) * 100 - 100
+        flag = "profit" if portfolio_ret >= 0 else "loss"
+        info_html += "<tr class=\"{}\"><td>Portfolio:</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}%</td></tr>".format(
+            flag,
+            round(self._portfolio_last_value, 2),
+            round(self._portfolio_last_value - self._portfolio_pre_close, 2),
+            round(portfolio_ret, 2))
+
+        benchmark_ret = (self._benchmark_last_value / self._benchmark_pre_close) * 100 - 100
+        flag = "profit" if benchmark_ret >= 0 else "loss"
+        info_html += "<tr class=\"{}\"><td>Benchmark:</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}%</td></tr>".format(
+            flag,
+            round(self._benchmark_last_value, 2),
+            round(self._benchmark_last_value - self._benchmark_pre_close, 2),
+            round(benchmark_ret, 2))
+        info_html += "</table>"
+        return info_html
+
+    def latest_securities_details_in_html(self):
+        table_html = u"<table id=\"detail\">"
+
+        head = [u"证券代码", u"证券简称", u"持有数量", u"当前价格", u"当日收益", u"总体涨跌"]
+        table_html += u"<tr><th class=\"name\">{}</th><th class=\"name\">{}</th><th class=\"price\">{}</th><th class=\"price\">{}</th><th class=\"price\">{}</th><th class=\"price\">{}</th></tr>".format(*head)
+
+        for sec in sorted(self._position['securities']):
+            info = self._position['securities'][sec]
+            pre_close = self._data[sec]['pre_close']
+            ret = (info["price"] / pre_close - 1)*100
+            flag = "profit" if ret >= 0 else "loss"
+            row = [flag,
+                   sec[:6],
+                   info["name"],
+                   str(int(info["amount"])),
+                   "{:.2f}".format(round(info["price"], 2)),
+                   "{:.2f}%".format(round(ret, 2)),
+                   "{:.2f}".format(round((info["price"] - pre_close) * info["amount"], 2))]
+            table_html += u"<tr class=\"{}\"><td class=\"name\">{}</td><td class=\"name\">{}</td><td class=\"price\">{}</td><td class=\"price\">{}</td><td class=\"price\">{}</td><td class=\"price\">{}</td></tr>".format(*row)
+
+        table_html += "</table>"
+        return table_html

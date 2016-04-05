@@ -6,7 +6,7 @@ baidu.py
 market data scraper from baidu
 
 function list:
-    load_intraday_data
+    load_latest_intraday_close_prices
     load_daily_close_prices
     load_crossectional_close_prices
 """
@@ -14,6 +14,7 @@ function list:
 
 import datetime
 import json
+import logging
 from urllib import urlopen
 
 from .. utils.log import logger
@@ -98,7 +99,7 @@ def time_mapping(time):
 def parse_url_for_intraday_data(url):
     """return preClose and timeline"""
 
-    logger.info("get \"{}\"".format(url))
+    logger.debug("GET \"{}\"".format(url))
 
     try:
         html = urlopen(url)
@@ -119,7 +120,7 @@ def parse_url_for_intraday_data(url):
 def parse_url_for_daily_close_prices(url):
     """return daily close price series"""
 
-    logger.info("get \"{}\"".format(url))
+    logger.debug("GET \"{}\"".format(url))
 
     try:
         html = urlopen(url)
@@ -135,15 +136,20 @@ def parse_url_for_daily_close_prices(url):
     return {"close_price": timeline}
 
 
-def load_intraday_data(universe):
+def load_latest_intraday_close_prices(universe, is_trading_day=True):
     """all sec_ids in universe are in standard form"""
 
-    now = datetime.datetime.now()
-    last_minute = now.strftime("%H:%M")
-    if now.second < 30:
-        trading_minutes = [m for m in TRADING_MINUTES if m < last_minute]
+    logger.info("Loading lastest intraday close prices of {}...".format(universe))
+
+    if is_trading_day:
+        now = datetime.datetime.now()
+        last_minute = now.strftime("%H:%M")
+        if now.second < 30:
+            trading_minutes = [m for m in TRADING_MINUTES if m < last_minute]
+        else:
+            trading_minutes = [m for m in TRADING_MINUTES if m <= last_minute]
     else:
-        trading_minutes = [m for m in TRADING_MINUTES if m <= last_minute]
+        trading_minutes = TRADING_MINUTES
 
     data_all = {}
     for sec in universe:
@@ -151,11 +157,14 @@ def load_intraday_data(universe):
         data = parse_url_for_intraday_data(url)
         timeline_raw = data['timeline']
 
-        open_minute = [m for m in timeline_raw if m <= "09:30"]
-        if not open_minute:
-            raise ValueError("Open minute missing!")
+        if is_trading_day:
+            open_minute = [m for m in timeline_raw if m <= "09:30"]
+            if not open_minute:
+                raise ValueError("Open minute missing!")
+            else:
+                open_minute = open_minute[-1]
         else:
-            open_minute = open_minute[-1]
+            open_minute = "09:30"
 
         for i, m in enumerate(trading_minutes):
             if m not in timeline_raw:
@@ -171,6 +180,8 @@ def load_intraday_data(universe):
 
 def load_daily_close_prices(universe, start, end):
     """load daily history data for single security"""
+
+    logger.info("Loading daily close prices of {} from {} to {}...".format(universe, start, end))
 
     trading_days = get_trading_days(start, end)
     n = len(trading_days)
@@ -200,6 +211,8 @@ def load_daily_close_prices(universe, start, end):
 
 def load_crossectional_close_prices(universe, date):
     """load daily history data for single security"""
+
+    logger.info("Loading crossectional close prices of {} at {}...".format(universe, date))
 
     if date not in TRADING_DAYS_DICT:
         raise ValueError("{} is not in trading days!".format(date))

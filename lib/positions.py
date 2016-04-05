@@ -12,6 +12,7 @@ import os
 import json
 import pandas as pd
 
+from utils.log import logger
 from utils.path import POSITION_DB_PATH
 
 
@@ -29,11 +30,15 @@ class Positions(object):
     def _load_positions(self):
         """load history positions and trading days from database"""
 
+        logger.info("Loading positions information from posdb...")
+
         jsonlist = os.listdir(POSITION_DB_PATH)
         for month_json in jsonlist:
             month_pos = json.load(file(os.path.join(POSITION_DB_PATH, month_json)))
             self._history_positions.update(month_pos)
         self._trading_days = sorted(self._history_positions)
+        
+        logger.info("Successfully loaded positions information!")
 
     def get_position(self, date):
         return self._history_positions.get(date, {})

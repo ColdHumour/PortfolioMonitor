@@ -8,35 +8,30 @@ porfolio monitor api server
 @author: yudi.wu
 """
 
-import os
+## TODO
+# 1. put request
+# 2. setinterval
+# 3. gevent
+
+
 from flask import Flask, send_from_directory
 from flask.ext.restful import Resource, Api
 
 app = Flask("PortfolioMonitor")
 api = Api(app)
 
-from lib.positions import Positions
-from lib.snapshot import Snapshot
-from lib.utils.path import SNAPSHOT_IMG_FILE
+from lib.terminal import Terminal
+from lib.utils.log import logger
 
-hist_pos = Positions()
-last_pos = hist_pos._history_positions[hist_pos._trading_days[-1]]
-snapshot = Snapshot('000300.XSHG', last_pos)
-snapshot.load_data()
-if not os.path.isfile(SNAPSHOT_IMG_FILE):
-    snapshot.draw_timeline()
+terminal = Terminal()
 
 
 class APIServer(Resource):
     def get(self, target):
-        snapshot.load_data()
-        snapshot.draw_timeline()
-        return ""
-
-        # if hasattr(pos, target):
-        #     return getattr(pos, target)
-        # else:
-        #     return ""
+        if hasattr(terminal, target):
+            return getattr(terminal, target)
+        else:
+            return ""
 
     def put(self, target):
         return ""
