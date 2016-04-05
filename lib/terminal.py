@@ -212,3 +212,7 @@ class Terminal(object):
     @property
     def snapshot_detail_info(self):
         return self._snapshot.latest_securities_details_in_html()
+
+    @property
+    def latest_position_string(self):
+        return self._snapshot.latest_position_in_simple_string()

@@ -15,7 +15,7 @@ porfolio monitor api server
 # 4. gevent
 
 
-from flask import Flask, send_from_directory
+from flask import Flask, request, send_from_directory
 from flask.ext.restful import Resource, Api
 
 app = Flask("PortfolioMonitor")
@@ -28,16 +28,17 @@ terminal = Terminal()
 
 
 class APIServer(Resource):
-    def get(self, target):
-        if hasattr(terminal, target):
-            return getattr(terminal, target)
+    def get(self, api):
+        if hasattr(terminal, api):
+            return getattr(terminal, api)
         else:
             return ""
 
-    def put(self, target):
+    def put(self, api):
+        print request.form["pos_string"]
         return ""
 
-api.add_resource(APIServer, '/api/<string:target>')
+api.add_resource(APIServer, '/api/<string:api>')
 
 
 class Home(Resource):

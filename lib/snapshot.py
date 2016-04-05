@@ -28,7 +28,7 @@ class Snapshot(object):
     def __init__(self, benchmark, position, is_trading_day=True):
         self._benchmark = benchmark
         self._position = position
-        self._universe = set(position['securities'].keys()) | set([benchmark])
+        self._universe = set(position["securities"].keys()) | set([benchmark])
         self._is_trading_day = is_trading_day
 
         now = datetime.now()
@@ -88,24 +88,24 @@ class Snapshot(object):
         self._data = load_latest_intraday_close_prices(self._universe, self._is_trading_day)
         logger.info("Successfully downloaded snapshot data!")
 
-        self._benchmark_pre_close = self._data[self._benchmark]['pre_close']
-        self._benchmark_timeline = self._data[self._benchmark]['timeline']
+        self._benchmark_pre_close = self._data[self._benchmark]["pre_close"]
+        self._benchmark_timeline = self._data[self._benchmark]["timeline"]
         d = len(self._benchmark_timeline)
         self._last_minute = TRADING_MINUTES[d-1]
         self._benchmark_last_value = self._benchmark_timeline[-1]
 
-        self._portfolio_pre_close = self._position['cash']
-        for sec, secinfo in self._position['securities'].iteritems():
-            self._portfolio_pre_close += secinfo['amount'] * self._data[sec]['pre_close']
-            secinfo['price'] = self._data[sec]['timeline'][-1]
+        self._portfolio_pre_close = self._position["cash"]
+        for sec, secinfo in self._position["securities"].iteritems():
+            self._portfolio_pre_close += secinfo["amount"] * self._data[sec]["pre_close"]
+            secinfo["price"] = self._data[sec]["timeline"][-1]
 
         self._portfolio_timeline = []
         for i in range(d):
-            v = self._position['cash']
-            for sec, secinfo in self._position['securities'].iteritems():
-                v += secinfo['amount'] * self._data[sec]['timeline'][i]
+            v = self._position["cash"]
+            for sec, secinfo in self._position["securities"].iteritems():
+                v += secinfo["amount"] * self._data[sec]["timeline"][i]
             self._portfolio_timeline.append(v)
-        self._position['value'] = v
+        self._position["value"] = v
         self._portfolio_last_value = v
 
         self._benchmark_timeline = [v / self._benchmark_pre_close - 1 for v in self._benchmark_timeline]
@@ -117,16 +117,16 @@ class Snapshot(object):
     def draw_timeline(self):
         fig = Figure(figsize=(7, 3))
         canvas = FigureCanvas(fig)
-        ax = fig.add_subplot(111, axisbg='white')
+        ax = fig.add_subplot(111, axisbg="white")
 
         xseries = range(len(TRADING_MINUTES))
-        pct = lambda x, _: '{0:1.1f}%'.format(100*x)
+        pct = lambda x, _: "{0:1.1f}%".format(100*x)
         xseries_show = xseries[::30]
         xlabels_show = TRADING_MINUTES[::30]
 
         ax.clear()
-        ax.plot(xseries, self._portfolio_timeline, label='portfolio', linewidth=1.0, color='r')
-        ax.plot(xseries, self._benchmark_timeline, label='benchmark', linewidth=1.0, color='b')
+        ax.plot(xseries, self._portfolio_timeline, label="portfolio", linewidth=1.0, color="r")
+        ax.plot(xseries, self._benchmark_timeline, label="benchmark", linewidth=1.0, color="b")
 
         ax.yaxis.set_major_formatter(FuncFormatter(pct))
         for item in ax.get_yticklabels():
@@ -137,7 +137,7 @@ class Snapshot(object):
         ax.set_xticklabels(xlabels_show, fontsize=10)
 
         ax.grid(True)
-        ax.legend(loc=2, prop={'size': 9})
+        ax.legend(loc=2, prop={"size": 9})
 
         fig.tight_layout()
         fig.savefig(SNAPSHOT_IMG_FILE)
@@ -160,7 +160,7 @@ class Snapshot(object):
         for sec in self._position["securities"]:
             snapshot_info[sec] = self._data[sec]["pre_close"]
 
-        f = open(SNAPSHOT_FILE, 'w')
+        f = open(SNAPSHOT_FILE, "w")
         f.write(json.dumps(snapshot_info, sort_keys=True, indent=4))
         f.close()
         logger.info("Snapshot data saved at ./static/temp/snapshot.json.")
@@ -168,12 +168,18 @@ class Snapshot(object):
     def update_position(self, new_position):
         if self._is_trading_day and "09:30" <= self._minute <= "15:00":
             self._position = new_position
-            self._universe = set(new_position['securities'].keys()) | set([benchmark])
+            self._universe = set(new_position["securities"].keys()) | set([benchmark])
             self.load_data_from_scraper()
             self.draw_timeline()
 
     def latest_position(self):
         return self._position
+
+    def latest_position_in_simple_string(self):
+        pos_string = "{:.2f}\n".format(self._position["cash"])
+        for sec in sorted(self._position["securities"]):
+            pos_string += "{}|{}\n".format(sec[:6], int(self._position["securities"][sec]["amount"]))
+        return pos_string
 
     def latest_overall_info_in_html(self):
         info_html = "<table id=\"overall\">"
@@ -203,9 +209,9 @@ class Snapshot(object):
         head = [u"证券代码", u"证券简称", u"持有数量", u"当前价格", u"当日收益", u"总体涨跌"]
         table_html += u"<tr><th class=\"name\">{}</th><th class=\"name\">{}</th><th class=\"price\">{}</th><th class=\"price\">{}</th><th class=\"price\">{}</th><th class=\"price\">{}</th></tr>".format(*head)
 
-        for sec in sorted(self._position['securities']):
-            info = self._position['securities'][sec]
-            pre_close = self._data[sec]['pre_close']
+        for sec in sorted(self._position["securities"]):
+            info = self._position["securities"][sec]
+            pre_close = self._data[sec]["pre_close"]
             ret = (info["price"] / pre_close - 1)*100
             flag = "profit" if ret >= 0 else "loss"
             row = [flag,

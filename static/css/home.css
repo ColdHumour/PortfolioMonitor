@@ -3,6 +3,7 @@ body {
     background-color: azure;
 }
 
+
 div {
     width: 750px;
     margin-right: auto;
@@ -11,7 +12,7 @@ div {
     margin-bottom: 20px;
 }
 
-div#overall_info, div#detail_info {
+div#overall_info, div#detail_info, div#detail_edit {
     width: 600px;
 }
 
@@ -27,6 +28,18 @@ div.button_column {
 }
 
 
+tr.profit {
+    color: red;
+    font-family: Consolas;
+    height: 30px;
+}
+
+tr.loss {
+    color: green;
+    font-family: Consolas;
+    height: 30px;
+}
+
 table#overall {
     font-size: 20px;
     font-weight: bold;
@@ -39,14 +52,20 @@ table#detail {
     margin-left: auto;
 }
 
+table#detail th {
+    font-family: Consolas;
+    font-weight: bold;
+    height: 30px;
+}
+
 .name {width: 80px; text-align: center;}
 .price {width: 90px; text-align: right;}
 .item {width: 100px; text-align: left;}
 
-table#detail th, table#detail td {height: 30px;}
-th {font-family: Consolas; font-weight: bold;}
-tr.profit {color: red; font-family: Consolas;}
-tr.loss {color: green; font-family: Consolas;}
+
+textarea#pos_string {
+    width: 500px;
+}
 
 
 #snapshot_img {
