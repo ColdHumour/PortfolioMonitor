@@ -177,11 +177,11 @@ class Snapshot(object):
 
     def latest_overall_info_in_html(self):
         info_html = "<table id=\"overall\">"
-        info_html += "<tr><td id=\"time\">Time:&nbsp;{}</td><td></td><td></td><td></td></tr>".format(self._last_minute)
+        info_html += "<tr><td class=\"item\">Time:</td><td class=\"value\">{}</td><td></td><td></td></tr>".format(self._last_minute)
 
         portfolio_ret = (self._portfolio_last_value / self._portfolio_pre_close) * 100 - 100
         flag = "profit" if portfolio_ret >= 0 else "loss"
-        info_html += "<tr class=\"{}\"><td>Portfolio:</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}%</td></tr>".format(
+        info_html += "<tr class=\"{}\"><td class=\"item\">Portfolio:</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}%</td></tr>".format(
             flag,
             round(self._portfolio_last_value, 2),
             round(self._portfolio_last_value - self._portfolio_pre_close, 2),
@@ -189,7 +189,7 @@ class Snapshot(object):
 
         benchmark_ret = (self._benchmark_last_value / self._benchmark_pre_close) * 100 - 100
         flag = "profit" if benchmark_ret >= 0 else "loss"
-        info_html += "<tr class=\"{}\"><td>Benchmark:</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}%</td></tr>".format(
+        info_html += "<tr class=\"{}\"><td class=\"item\">Benchmark:</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}</td><td class=\"price\">{:.2f}%</td></tr>".format(
             flag,
             round(self._benchmark_last_value, 2),
             round(self._benchmark_last_value - self._benchmark_pre_close, 2),

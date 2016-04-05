@@ -1,23 +1,36 @@
 body {
     text-align: center;
     background-color: azure;
- }
+}
 
 div {
-    width: 700px;
+    width: 750px;
     margin-right: auto;
     margin-left: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
+
+div#overall_info, div#detail_info {
+    width: 600px;
+}
+
+div.div_inline, div.button_column {
+    display: inline-block;
+    vertical-align: top;
+}
+
+div.button_column {
+    display: inline-block;
+    vertical-align: top;
+    width: 100px;
+}
+
 
 table#overall {
     font-size: 20px;
     font-weight: bold;
-}
-
-#time {
-    font-family: Consolas;
-    font-size: 20px;
-    font-weight: bold;
+    text-align: right;
 }
 
 table#detail {
@@ -26,12 +39,15 @@ table#detail {
     margin-left: auto;
 }
 
+.name {width: 80px; text-align: center;}
+.price {width: 90px; text-align: right;}
+.item {width: 100px; text-align: left;}
+
 table#detail th, table#detail td {height: 30px;}
 th {font-family: Consolas; font-weight: bold;}
 tr.profit {color: red; font-family: Consolas;}
 tr.loss {color: green; font-family: Consolas;}
-.name {width: 80px; text-align: center;}
-.price {width: 90px; text-align: right;}
+
 
 #snapshot_img {
     width: 700px;

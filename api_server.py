@@ -9,9 +9,10 @@ porfolio monitor api server
 """
 
 ## TODO
-# 1. put request
-# 2. setinterval
-# 3. gevent
+# 1. mult-div layout
+# 2. put request
+# 3. setinterval
+# 4. gevent
 
 
 from flask import Flask, send_from_directory
