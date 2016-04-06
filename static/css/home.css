@@ -1,8 +1,8 @@
 body {
     text-align: center;
     background-color: azure;
+    font-family: "Microsoft Yahei Mono", Consolas, "Microsoft YaHei";
 }
-
 
 div {
     width: 750px;
@@ -23,6 +23,7 @@ div.div_inline, div.button_column {
 
 div.button_column {
     display: inline-block;
+    text-align: left;
     vertical-align: top;
     width: 100px;
 }
@@ -30,13 +31,11 @@ div.button_column {
 
 tr.profit {
     color: red;
-    font-family: Consolas;
     height: 30px;
 }
 
 tr.loss {
     color: green;
-    font-family: Consolas;
     height: 30px;
 }
 
@@ -53,7 +52,6 @@ table#detail {
 }
 
 table#detail th {
-    font-family: Consolas;
     font-weight: bold;
     height: 30px;
 }
@@ -63,17 +61,11 @@ table#detail th {
 .item {width: 100px; text-align: left;}
 
 
-textarea#pos_string {
-    width: 500px;
-}
+textarea#pos_string {width: 500px;}
 
+p#auto_refresh {font-size: 15px;}
 
-#snapshot_img {
-    width: 700px;
-    height: 300px;
-}
-
-#history_img {
+#snapshot, #history {
     width: 700px;
     height: 300px;
 }

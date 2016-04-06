@@ -10,7 +10,6 @@ Generate all absolute paths the module used.
 
 import os
 
-
 MODULE_PATH = os.path.dirname(__file__)
 MODULE_PATH = os.path.dirname(MODULE_PATH)
 MODULE_PATH = os.path.dirname(MODULE_PATH)
@@ -24,9 +23,8 @@ CONFIG_FILE = os.path.join(MODULE_PATH, "config.json")
 POSITION_DB_PATH = os.path.join(LIB_PATH, "posdb")
 RESOURCES_PATH = os.path.join(LIB_PATH, "resources")
 
-STATE_FILE = os.path.join(STATIC_FILES_PATH, 'temp', 'state.json')
-BENCHMARK_FILE = os.path.join(STATIC_FILES_PATH, 'temp', 'benchmark.json')
+BENCHMARK_CACHE_FILE = os.path.join(STATIC_FILES_PATH, 'temp', 'benchmark.json')
 LOG_FILE = os.path.join(STATIC_FILES_PATH, 'temp', 'server.log')
-SNAPSHOT_FILE = os.path.join(STATIC_FILES_PATH, 'temp', 'snapshot.json')
+SNAPSHOT_CACHE_FILE = os.path.join(STATIC_FILES_PATH, 'temp', 'snapshot.json')
 SNAPSHOT_IMG_FILE = os.path.join(STATIC_FILES_PATH, 'temp', 'snapshot.jpg')
 HISTORY_IMG_FILE = os.path.join(STATIC_FILES_PATH, 'temp', 'history.jpg')

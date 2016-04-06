@@ -9,10 +9,9 @@ porfolio monitor api server
 """
 
 ## TODO
-# 1. mult-div layout
-# 2. put request
-# 3. setinterval
-# 4. gevent
+# 1. gevent
+# 2. setinterval
+# 3. highchart
 
 
 from flask import Flask, request, send_from_directory
@@ -35,8 +34,11 @@ class APIServer(Resource):
             return ""
 
     def put(self, api):
-        print request.form["pos_string"]
-        return ""
+        if hasattr(terminal, api):
+            getattr(terminal, api)(request.form["pos_string"])
+            return ""
+        else:
+            return ""
 
 api.add_resource(APIServer, '/api/<string:api>')
 

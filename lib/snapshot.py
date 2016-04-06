@@ -10,6 +10,7 @@ Class Snapshot to load realtime data of given universe.
 
 import json
 import numpy as np
+from copy import deepcopy
 from datetime import datetime
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -17,93 +18,108 @@ from matplotlib.ticker import FuncFormatter
 
 from scraper.baidu import load_latest_intraday_close_prices
 from utils.log import logger
-from utils.path import SNAPSHOT_FILE, SNAPSHOT_IMG_FILE
+from utils.path import SNAPSHOT_CACHE_FILE, SNAPSHOT_IMG_FILE
 from utils.trading_calendar import (
     get_trading_days_relatively,
-    TRADING_MINUTES
+    TRADING_DAYS_DICT,
+    TRADING_MINUTES,
 )
 
 
 class Snapshot(object):
-    def __init__(self, benchmark, position, is_trading_day=True):
+    def __init__(self, benchmark, position):
         self._benchmark = benchmark
-        self._position = position
+        self._position = deepcopy(position)
         self._universe = set(position["securities"].keys()) | set([benchmark])
-        self._is_trading_day = is_trading_day
 
-        now = datetime.now()
-        self._today = now.strftime("%Y-%m-%d")
-        self._minute = now.strftime("%H:%M")
-        self._yesterday = get_trading_days_relatively(self._today, 0)[0]
-
-        self._data = None
+        self._today = None
+        self._yesterday = None
+        self._is_trading_day = None
         self._last_minute = None
+
         self._benchmark_last_value = None
         self._benchmark_pre_close = None
         self._benchmark_timeline = []
         self._portfolio_last_value = None
         self._portfolio_pre_close = None
         self._portfolio_timeline = []
+        self._pre_close = None
 
-        self.load_data()
+        self.refresh()
 
-    def load_data(self):
-        logger.info("Loading snapshot data file...")
+    def refresh(self):
+        now = datetime.now()
+        self._today = now.strftime("%Y-%m-%d")
+        self._yesterday = get_trading_days_relatively(self._today, -1)
+        self._is_trading_day = self._today in TRADING_DAYS_DICT
+        self._last_minute = now.strftime("%H:%M")
+        if self._is_trading_day:
+            if self._last_minute < "09:30":
+                self._last_minute = "15:00"
+            elif "11:30" < self._last_minute < "13:00":
+                self._last_minute = "11:30"
+            elif self._last_minute > "15:00":
+                self._last_minute = "15:00"
+        else:
+            self._last_minute = "15:00"
+
         try:
-            data = json.load(file(SNAPSHOT_FILE))
-            if self._is_trading_day:
-                if self._minute < "09:30":
-                    assert data["date"] == self._yesterday
-                    assert data["minute"] == "15:00"
-                elif "11:30" < self._minute < "13:00":
-                    assert data["date"] == self._today
-                    assert data["minute"] == "11:30"
-                else:
-                    assert data["date"] == self._today
-                    assert data["minute"] == "15:00"
-            else:
-                assert data["date"] == self._yesterday
-                assert data["minute"] == "15:00"
-
-            assert data["benchmark"] == self._benchmark
-            assert data["position"]["cash"] == self._position["cash"]
-            assert sorted(data["position"]["securities"].keys()) == sorted(self._position["securities"].keys())
-
-            self._benchmark_last_value = data["benchmark_last_value"]
-            self._benchmark_pre_close = data["benchmark_pre_close"]
-            self._benchmark_timeline = data["benchmark_timeline"]
-            self._portfolio_last_value = data["portfolio_last_value"]
-            self._portfolio_pre_close = data["portfolio_pre_close"]
-            self._portfolio_timeline = data["portfolio_timeline"]
-            self._data = {sec: {"pre_close": data[sec]} for sec in self._position["securities"]}
+            self._load_data_from_cache()
+            logger.info("Successfully loaded snapshot cache...")
         except:
             self.load_data_from_scraper()
             self.draw_timeline()
-            if "11:30" < self._minute < "13:00" or self._minute > "15:00":
+            if self._last_minute < "09:30" or \
+               "11:30" <= self._last_minute < "13:00" or \
+               self._last_minute >= "15:00":
                 self.save()
+
+    def load_data_from_cache(self):
+        logger.info("Loading snapshot data cache...")
+        data = json.load(file(SNAPSHOT_CACHE_FILE))
+        if self._is_trading_day:
+            if self._last_minute < "09:30":
+                assert data["date"] == self._yesterday
+                assert data["minute"] == "15:00"
+            else:
+                assert data["date"] == self._today
+                assert data["minute"] == self._last_minute
+        else:
+            assert data["date"] == self._yesterday
+            assert data["minute"] == "15:00"
+
+        assert data["benchmark"] == self._benchmark
+        assert data["position"]["cash"] == self._position["cash"]
+        assert sorted(data["position"]["securities"].keys()) == sorted(self._position["securities"].keys())
+
+        self._benchmark_last_value = data["benchmark_last_value"]
+        self._benchmark_pre_close = data["benchmark_pre_close"]
+        self._portfolio_last_value = data["portfolio_last_value"]
+        self._portfolio_pre_close = data["portfolio_pre_close"]
+        self._pre_close = data["pre_close"]
 
     def load_data_from_scraper(self):
         logger.info("Downloading snapshot data through scraper...")
 
-        self._data = load_latest_intraday_close_prices(self._universe, self._is_trading_day)
+        data = load_latest_intraday_close_prices(self._universe, self._is_trading_day)
         logger.info("Successfully downloaded snapshot data!")
 
-        self._benchmark_pre_close = self._data[self._benchmark]["pre_close"]
-        self._benchmark_timeline = self._data[self._benchmark]["timeline"]
-        d = len(self._benchmark_timeline)
-        self._last_minute = TRADING_MINUTES[d-1]
+        self._pre_close = {sec: data[sec]["pre_close"] for sec in self._position["securities"]}
+        self._benchmark_pre_close = data[self._benchmark]["pre_close"]
+        self._benchmark_timeline = data[self._benchmark]["timeline"]
         self._benchmark_last_value = self._benchmark_timeline[-1]
+        d = len(self._benchmark_timeline)
 
         self._portfolio_pre_close = self._position["cash"]
         for sec, secinfo in self._position["securities"].iteritems():
-            self._portfolio_pre_close += secinfo["amount"] * self._data[sec]["pre_close"]
-            secinfo["price"] = self._data[sec]["timeline"][-1]
+            self._portfolio_pre_close += secinfo["amount"] * self._pre_close[sec]
+            secinfo["price"] = data[sec]["timeline"][-1]
 
         self._portfolio_timeline = []
         for i in range(d):
             v = self._position["cash"]
             for sec, secinfo in self._position["securities"].iteritems():
-                v += secinfo["amount"] * self._data[sec]["timeline"][i]
+                v += secinfo["amount"] * data[sec]["timeline"][i]
             self._portfolio_timeline.append(v)
         self._position["value"] = v
         self._portfolio_last_value = v
@@ -146,29 +162,25 @@ class Snapshot(object):
     def save(self):
         snapshot_info = {
             "date": self._today,
-            "minute": self._minute,
+            "minute": self._last_minute,
             "benchmark": self._benchmark,
+            "pre_close": self._pre_close,
             "position": self._position,
             "benchmark_last_value": self._benchmark_last_value,
             "benchmark_pre_close": self._benchmark_pre_close,
-            "benchmark_timeline": self._benchmark_timeline,
             "portfolio_last_value": self._portfolio_last_value,
             "portfolio_pre_close": self._portfolio_pre_close,
-            "portfolio_timeline": self._portfolio_timeline,
         }
 
-        for sec in self._position["securities"]:
-            snapshot_info[sec] = self._data[sec]["pre_close"]
-
-        f = open(SNAPSHOT_FILE, "w")
+        f = open(SNAPSHOT_CACHE_FILE, "w")
         f.write(json.dumps(snapshot_info, sort_keys=True, indent=4))
         f.close()
         logger.info("Snapshot data saved at ./static/temp/snapshot.json.")
 
     def update_position(self, new_position):
-        if self._is_trading_day and "09:30" <= self._minute <= "15:00":
+        if self._is_trading_day and "09:30" <= self._last_minute <= "15:00":
             self._position = new_position
-            self._universe = set(new_position["securities"].keys()) | set([benchmark])
+            self._universe = set(new_position["securities"].keys()) | set([self._benchmark])
             self.load_data_from_scraper()
             self.draw_timeline()
 
@@ -211,7 +223,7 @@ class Snapshot(object):
 
         for sec in sorted(self._position["securities"]):
             info = self._position["securities"][sec]
-            pre_close = self._data[sec]["pre_close"]
+            pre_close = self._pre_close[sec]
             ret = (info["price"] / pre_close - 1)*100
             flag = "profit" if ret >= 0 else "loss"
             row = [flag,

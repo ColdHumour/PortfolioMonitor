@@ -26,13 +26,26 @@ from . scraper.baidu import (
 )
 
 from . utils.log import logger
-from . utils.path import CONFIG_FILE, BENCHMARK_FILE, HISTORY_IMG_FILE
-from . utils.trading_calendar import get_trading_days
+from . utils.path import CONFIG_FILE, BENCHMARK_CACHE_FILE, HISTORY_IMG_FILE
+from . utils.trading_calendar import (
+    get_trading_days,
+    get_trading_days_relatively,
+    TRADING_DAYS_DICT,
+)
 
 
 class Terminal(object):
+    """
+    用于和前端交互的数据终端，可用于交互的方法和属性有：
+    - update_position(pos_string): 接收前端的持仓字符串，刷新position和snapshot，仅在交易日09:30-15:00有效
+    - save(): 保存最新的仓位，仅在交易日15:00后有效
+    - reload_snapshot: 刷新snapshot，返回刷新后的overall_info和detail_info
+    - snapshot_overall_info: 最新的overall_info
+    - snapshot_detail_info: 最新的detail_info
+    - latest_position_string: 最新的position的简单字符串形式，以供修改
+    """
+
     def __init__(self):
-        self._need_save_history = False
         self._benchmark = None
         self._benchmark_history = None
         self._benchmark_return = None
@@ -43,29 +56,28 @@ class Terminal(object):
         self._positions = Positions()
         self._auto_fill_positions()
         self._load_benchmark()
-        if not os.path.isfile(HISTORY_IMG_FILE) or self._need_save_history:
+        if not os.path.isfile(HISTORY_IMG_FILE):
             self._draw_history_timeline()
 
         self._snapshot = Snapshot(self._benchmark, self._positions.get_current_position())
-        self._snapshot.load_data()
 
     def _auto_fill_positions(self):
-        today = datetime.now().strftime("%Y-%m-%d")
-        trading_days_raw = self._positions._trading_days
-        trading_days_new = get_trading_days(trading_days_raw[-1], today)
+        now = datetime.now()
+        today = now.strftime("%Y-%m-%d")
+        yesterday = get_trading_days_relatively(today, -1)[0]
 
+        trading_days_raw = self._positions._trading_days
         latest_valid_date = trading_days_raw[-1]
         latest_position = self._positions.get_position(latest_valid_date)
 
-        if today != trading_days_new[-1]:
-            self._trading_days = trading_days_raw
-            self._positions.set_current_info(latest_valid_date, latest_position)
+        trading_days_new = get_trading_days(latest_valid_date, yesterday)[1:]
+        self._trading_days = trading_days_raw + trading_days_new
+        if today in TRADING_DAYS_DICT:
+            self._positions.set_current_info(today, deepcopy(latest_position))
         else:
-            self._need_save_history = True
-            trading_days_new = trading_days_new[1:-1]
-            self._trading_days = trading_days_raw + trading_days_new
-            self._positions.set_current_info(today, latest_position)
+            self._positions.set_current_info(yesterday, deepcopy(latest_position))
 
+        if trading_days_new:
             logger.info("Filling positions data of {} through scraper, referring position at {}...".format(trading_days_new, latest_valid_date))
 
             for date in trading_days_new:
@@ -97,13 +109,12 @@ class Terminal(object):
         end = self._trading_days[-1]
 
         try:
-            benchmark_info = json.load(file(BENCHMARK_FILE))
+            benchmark_info = json.load(file(BENCHMARK_CACHE_FILE))
             assert benchmark_info['sec_id'] == benchmark
             assert benchmark_info['start'] == start
             assert benchmark_info['end'] == end
             logger.info("Successfully loaded benchmark data file!")
         except:
-            self._need_save_history = True
             logger.info("Benchmark data file is outdated. Downloading benchmark data ({}) from {} to {} through scraper...".format(benchmark, start, end))
 
             data = load_daily_close_prices(universe=[benchmark],
@@ -117,7 +128,7 @@ class Terminal(object):
                 "end": end,
                 "data": data[benchmark],
             }
-            f = open(BENCHMARK_FILE, 'w')
+            f = open(BENCHMARK_CACHE_FILE, 'w')
             f.write(json.dumps(benchmark_info, sort_keys=True, indent=4))
             f.close()
             logger.info("Benchmark data saved at ./static/temp/benchmark.json.")
@@ -174,32 +185,57 @@ class Terminal(object):
         fig.savefig(HISTORY_IMG_FILE)
         logger.info("History image saved at ./static/temp/history.")
 
-    def parse_new_pos_string(self, pos_string):
-        pos_info = [r.strip() for r in pos_string.strip().split("\n")]
+    def update_position(self, pos_string):
+        new_position = self._parse_new_pos_string(pos_string)
 
+        now = datetime.now()
+        today = now.strftime("%Y-%m-%d")
+        minute = now.strftime("%H:%M")
+        if today in TRADING_DAYS_DICT and "09:30" <= minute <= "15:00":
+            self._snapshot.update_position(new_position)
+            self._positions.set_current_info(today, self._snapshot.latest_position())
+
+    def _parse_new_pos_string(self, pos_string):
+        pos_info = [r.strip() for r in pos_string.strip().split("\n")]
         pos_dict = {}
         pos_dict["cash"] = float(pos_info[0])
-        pos_dict["securites"] = {}
+        pos_dict["securities"] = {}
         pos_dict["value"] = 0.0
 
         for r in pos_info[1:]:
             sec, amount = r.split("|")
             sec += ".XSHG" if sec[0] == "6" else ".XSHE"
-            pos_dict["securites"][sec] = {
+            pos_dict["securities"][sec] = {
                 "amount": float(amount),
                 "price": 0.0,
                 "name": None,
             }
 
-        short_names = load_sec_shortname(pos_dict["securites"].keys())
+        short_names = load_sec_shortname(pos_dict["securities"].keys())
         for sec, name in short_names.iteritems():
-            pos_dict["securites"][sec]["name"] = name
+            pos_dict["securities"][sec]["name"] = name
         return pos_dict
 
     @property
+    def save(self):
+        now = datetime.now()
+        today = now.strftime("%Y-%m-%d")
+        minute = now.strftime("%H:%M")
+        if today in TRADING_DAYS_DICT and minute > "15:00":
+            self._snapshot.save()
+            self._positions.set_current_info(today, self._snapshot.latest_position())
+            self._positions.save_current_position()
+        return ""
+
+    @property
     def reload_snapshot(self):
-        self._snapshot.load_data()
-        self._snapshot.draw_timeline()
+        now = datetime.now()
+        self._today = now.strftime("%Y-%m-%d")
+        self._yesterday = get_trading_days_relatively(self._today, -1)
+        self._minute = now.strftime("%H:%M")
+        self._is_trading_day = self._today in TRADING_DAYS_DICT
+
+        self._snapshot.refresh()
         return {
             "snapshot_overall_info": self.snapshot_overall_info,
             "snapshot_detail_info": self.snapshot_detail_info
