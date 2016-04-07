@@ -107,6 +107,7 @@ class Terminal(object):
         benchmark = config["benchmark"]
         start = self._trading_days[0]
         end = self._trading_days[-1]
+        redraw = False
 
         try:
             benchmark_info = json.load(file(BENCHMARK_CACHE_FILE))
@@ -115,6 +116,7 @@ class Terminal(object):
             assert benchmark_info['end'] == end
             logger.info("Successfully loaded benchmark data file!")
         except:
+            redraw = True
             logger.info("Benchmark data file is outdated. Downloading benchmark data ({}) from {} to {} through scraper...".format(benchmark, start, end))
 
             data = load_daily_close_prices(universe=[benchmark],
@@ -133,13 +135,13 @@ class Terminal(object):
             f.close()
             logger.info("Benchmark data saved at ./static/temp/benchmark.json.")
 
-            self._draw_history_timeline()
-
         self._benchmark = benchmark
         self._benchmark_history = benchmark_info['data']
         assert len(self._benchmark_history) == len(self._portfolio_history)
         v0 = self._benchmark_history[0]
         self._benchmark_return = [v/v0 - 1 for v in self._benchmark_history]
+        if redraw:
+            self._draw_history_timeline()
 
     def _draw_history_timeline(self):
         fig = Figure(figsize=(7, 3))
