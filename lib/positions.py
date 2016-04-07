@@ -37,7 +37,7 @@ class Positions(object):
             month_pos = json.load(file(os.path.join(POSITION_DB_PATH, month_json)))
             self._history_positions.update(month_pos)
         self._trading_days = sorted(self._history_positions)
-        
+
         logger.info("Successfully loaded positions information!")
 
     def get_position(self, date):

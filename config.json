@@ -1,4 +1,5 @@
 {
     "benchmark": "000300.XSHG",
-    "loglevel": "INFO"
+    "loglevel": "INFO",
+    "concurrent": 10
 }

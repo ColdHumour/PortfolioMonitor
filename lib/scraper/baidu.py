@@ -17,7 +17,12 @@ import json
 import logging
 from urllib import urlopen
 
+from gevent import monkey
+from gevent.pool import Pool
+monkey.patch_socket()
+
 from .. utils.log import logger
+from .. utils.path import CONFIG_FILE
 from .. utils.trading_calendar import (
     TRADING_DAYS_ALL,
     TRADING_DAYS_DICT,
@@ -151,10 +156,20 @@ def load_latest_intraday_close_prices(universe, is_trading_day=True):
     else:
         trading_minutes = TRADING_MINUTES
 
-    data_all = {}
-    for sec in universe:
+    def load_sec(sec):
         url = complete_intraday_url(sec_id_mapping(sec))
         data = parse_url_for_intraday_data(url)
+        return sec, data
+
+    config = json.load(file(CONFIG_FILE))
+    concurrent = config["concurrent"]
+    pool = Pool(concurrent)
+    requests = [pool.spawn(load_sec, sec) for sec in universe]
+    pool.join()
+
+    data_all = {}
+    for response in requests:
+        sec, data = response.value
         timeline_raw = data['timeline']
 
         if is_trading_day:
@@ -192,12 +207,22 @@ def load_daily_close_prices(universe, start, end):
     if n > 500:
         raise ValueError("Too many trading days between {} and {}!".format(start, end))
 
-    data_all = {}
-    for sec in universe:
+    def load_sec(sec):
         url = complete_daily_url(sec_id=sec_id_mapping(sec),
                                  date=end.replace('-', ''),
                                  n=n)
         data = parse_url_for_daily_close_prices(url)
+        return sec, data
+
+    config = json.load(file(CONFIG_FILE))
+    concurrent = config["concurrent"]
+    pool = Pool(concurrent)
+    requests = [pool.spawn(load_sec, sec) for sec in universe]
+    pool.join()
+
+    data_all = {}
+    for response in requests:
+        sec, data = response.value
         timeline_raw = data["close_price"]
 
         for i, date in enumerate(trading_days):
@@ -220,11 +245,21 @@ def load_crossectional_close_prices(universe, date):
     i_date = TRADING_DAYS_DICT[date]
     date = TRADING_DAYS_ALL[i_date+1]
 
-    data_all = {}
-    for sec in universe:
+    def load_sec(sec):
         url = complete_daily_url(sec_id=sec_id_mapping(sec),
                                  date=date.replace('-', ''),
                                  n=1)
         data = parse_url_for_daily_close_prices(url)
+        return sec, data
+
+    config = json.load(file(CONFIG_FILE))
+    concurrent = config["concurrent"]
+    pool = Pool(concurrent)
+    requests = [pool.spawn(load_sec, sec) for sec in universe]
+    pool.join()
+
+    data_all = {}
+    for response in requests:
+        sec, data = response.value
         data_all[sec] = data["close_price"].values()[0]
     return data_all

@@ -9,9 +9,7 @@ porfolio monitor api server
 """
 
 ## TODO
-# 1. gevent
-# 2. setinterval
-# 3. highchart
+# 1. highchart
 
 
 from flask import Flask, request, send_from_directory

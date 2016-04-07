@@ -9,10 +9,16 @@ function list:
     load_sec_shortname
 """
 
-
+import json
 import re
 from urllib import urlopen
+
+from gevent import monkey
+from gevent.pool import Pool
+monkey.patch_socket()
+
 from .. utils.log import logger
+from .. utils.path import CONFIG_FILE
 
 
 # 当前最新的成交信息
@@ -36,7 +42,7 @@ def parse_url_for_shortname(url):
     """return preClose and timeline"""
 
     logger.debug("get \"{}\"".format(url))
-    
+
     try:
         html = urlopen(url)
     except:
@@ -58,8 +64,19 @@ def load_sec_shortname(universe):
 
     logger.info("Loading shortnames of {}...".format(universe))
 
-    data = {}
-    for sec in universe:
+    def load_sec(sec):
         url = complete_url(sec_id_mapping(sec))
-        data[sec] = parse_url_for_shortname(url)
-    return data
+        data = parse_url_for_shortname(url)
+        return sec, data
+
+    config = json.load(file(CONFIG_FILE))
+    concurrent = config["concurrent"]
+    pool = Pool(concurrent)
+    requests = [pool.spawn(load_sec, sec) for sec in universe]
+    pool.join()
+
+    data_all = {}
+    for response in requests:
+        sec, data = response.value
+        data[sec] = data
+    return data_all

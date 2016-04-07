@@ -133,6 +133,8 @@ class Terminal(object):
             f.close()
             logger.info("Benchmark data saved at ./static/temp/benchmark.json.")
 
+            self._draw_history_timeline()
+
         self._benchmark = benchmark
         self._benchmark_history = benchmark_info['data']
         assert len(self._benchmark_history) == len(self._portfolio_history)
