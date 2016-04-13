@@ -78,5 +78,5 @@ def load_sec_shortname(universe):
     data_all = {}
     for response in requests:
         sec, data = response.value
-        data[sec] = data
+        data_all[sec] = data
     return data_all
