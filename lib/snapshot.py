@@ -16,10 +16,10 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 
-from scraper.baidu import load_latest_intraday_close_prices
-from utils.log import logger
-from utils.path import SNAPSHOT_CACHE_FILE, SNAPSHOT_IMG_FILE
-from utils.trading_calendar import (
+from . scraper.baidu import load_latest_intraday_close_prices
+from . utils.log import logger
+from . utils.path import SNAPSHOT_CACHE_FILE, SNAPSHOT_IMG_FILE
+from . utils.trading_calendar import (
     get_trading_days_relatively,
     TRADING_DAYS_DICT,
     TRADING_MINUTES,

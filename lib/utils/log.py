@@ -28,6 +28,7 @@ def set_logger(name, level):
     return logger
 
 
-config = json.load(file(CONFIG_FILE))
+with open(CONFIG_FILE, 'r') as config_file:
+    config = json.load(config_file)
 loglevel = config["loglevel"]
 logger = set_logger("APIServer", getattr(logging, loglevel))

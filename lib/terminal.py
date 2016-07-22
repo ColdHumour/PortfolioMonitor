@@ -16,8 +16,8 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 
-from positions import Positions
-from snapshot import Snapshot
+from . positions import Positions
+from . snapshot import Snapshot
 
 from . scraper.sina import load_sec_shortname
 from . scraper.baidu import (
@@ -103,14 +103,16 @@ class Terminal(object):
     def _load_benchmark(self):
         logger.info("Loading benchmark data file...")
 
-        config = json.load(file(CONFIG_FILE))
+        with open(CONFIG_FILE, 'r') as config_file:
+            config = json.load(config_file)
         benchmark = config["benchmark"]
         start = self._trading_days[0]
         end = self._trading_days[-1]
         redraw = False
 
         try:
-            benchmark_info = json.load(file(BENCHMARK_CACHE_FILE))
+            with open(BENCHMARK_CACHE_FILE, 'r') as bm_file:
+                benchmark_info = json.load(bm_file)
             assert benchmark_info['sec_id'] == benchmark
             assert benchmark_info['start'] == start
             assert benchmark_info['end'] == end
@@ -150,7 +152,7 @@ class Terminal(object):
         ax_val = fig.add_subplot(122, axisbg='white')
 
         d = len(self._trading_days)
-        xseries = range(d)
+        xseries = list(range(d))
         xlabels = [t[-5:] for t in self._trading_days]
         pct = lambda x, _: '{0:1.1f}%'.format(100 * x)
 
@@ -216,7 +218,7 @@ class Terminal(object):
             }
 
         short_names = load_sec_shortname(pos_dict["securities"].keys())
-        for sec, name in short_names.iteritems():
+        for sec, name in short_names.items():
             pos_dict["securities"][sec]["name"] = name
         return pos_dict
 

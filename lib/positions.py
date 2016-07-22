@@ -12,8 +12,8 @@ import os
 import json
 import pandas as pd
 
-from utils.log import logger
-from utils.path import POSITION_DB_PATH
+from . utils.log import logger
+from . utils.path import POSITION_DB_PATH
 
 
 class Positions(object):
@@ -34,7 +34,9 @@ class Positions(object):
 
         jsonlist = os.listdir(POSITION_DB_PATH)
         for month_json in jsonlist:
-            month_pos = json.load(file(os.path.join(POSITION_DB_PATH, month_json)))
+            pos_path = os.path.join(POSITION_DB_PATH, month_json)
+            with open(pos_path, 'r') as pos_file:
+                month_pos = json.load(pos_file)
             self._history_positions.update(month_pos)
         self._trading_days = sorted(self._history_positions)
 

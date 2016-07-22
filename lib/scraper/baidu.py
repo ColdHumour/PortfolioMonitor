@@ -15,7 +15,10 @@ function list:
 import datetime
 import json
 import logging
-from urllib import urlopen
+try:
+    from urllib.request import urlopen
+except:
+    from urllib import urlopen
 
 from gevent import monkey
 from gevent.pool import Pool
@@ -161,7 +164,8 @@ def load_latest_intraday_close_prices(universe, is_trading_day=True):
         data = parse_url_for_intraday_data(url)
         return sec, data
 
-    config = json.load(file(CONFIG_FILE))
+    with open(CONFIG_FILE, 'r') as config_file:
+        config = json.load(config_file)
     concurrent = config["concurrent"]
     pool = Pool(concurrent)
     requests = [pool.spawn(load_sec, sec) for sec in universe]
@@ -214,7 +218,8 @@ def load_daily_close_prices(universe, start, end):
         data = parse_url_for_daily_close_prices(url)
         return sec, data
 
-    config = json.load(file(CONFIG_FILE))
+    with open(CONFIG_FILE, 'r') as config_file:
+        config = json.load(config_file)
     concurrent = config["concurrent"]
     pool = Pool(concurrent)
     requests = [pool.spawn(load_sec, sec) for sec in universe]
@@ -252,7 +257,8 @@ def load_crossectional_close_prices(universe, date):
         data = parse_url_for_daily_close_prices(url)
         return sec, data
 
-    config = json.load(file(CONFIG_FILE))
+    with open(CONFIG_FILE, 'r') as config_file:
+        config = json.load(config_file)
     concurrent = config["concurrent"]
     pool = Pool(concurrent)
     requests = [pool.spawn(load_sec, sec) for sec in universe]

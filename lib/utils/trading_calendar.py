@@ -15,7 +15,8 @@ from . path import RESOURCES_PATH
 
 def get_all_trading_days():
     filedir = os.path.join(RESOURCES_PATH, 'trading_days')
-    f = file(filedir).readlines()
+    with open(filedir, 'r') as file_info:
+        f = file_info.readlines()
     return [row.strip() for row in f]
 
 TRADING_DAYS_ALL = get_all_trading_days()
@@ -60,7 +61,8 @@ def get_trading_days_relatively(start, n):
 
 def get_all_trading_minutes():
     filedir = os.path.join(RESOURCES_PATH, 'trading_minutes')
-    f = file(filedir).readlines()
+    with open(filedir, 'r') as file_info:
+        f = file_info.readlines()
     return [row.strip() for row in f]
 
 TRADING_MINUTES = get_all_trading_minutes()

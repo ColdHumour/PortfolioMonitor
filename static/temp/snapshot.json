@@ -1,47 +1,23 @@
 {
     "benchmark": "000300.XSHG", 
-    "benchmark_last_value": 3203.3298339844, 
-    "benchmark_pre_close": 3192.2805175781, 
-    "date": "2016-07-11", 
+    "benchmark_last_value": 3225.162109375, 
+    "benchmark_pre_close": 3252.5227050781, 
+    "date": "2016-07-22", 
     "minute": "15:00", 
-    "portfolio_last_value": 25332.5799694823, 
-    "portfolio_pre_close": 24983.579801635802, 
+    "portfolio_last_value": 25768.1500152588, 
+    "portfolio_pre_close": 25510.1500228882, 
     "position": {
-        "cash": 9000.58, 
+        "cash": 22934.15, 
         "securities": {
-            "000568.XSHE": {
-                "amount": 100.0, 
-                "name": "\u6cf8\u5dde\u8001\u7a96", 
-                "price": 32.889999389648
-            }, 
-            "002736.XSHE": {
+            "000413.XSHE": {
                 "amount": 200.0, 
-                "name": "\u56fd\u4fe1\u8bc1\u5238", 
-                "price": 17.010000228882
-            }, 
-            "600188.XSHG": {
-                "amount": 200.0, 
-                "name": "\u5156\u5dde\u7164\u4e1a", 
-                "price": 12.729999542236
-            }, 
-            "600372.XSHG": {
-                "amount": 100.0, 
-                "name": "\u4e2d\u822a\u7535\u5b50", 
-                "price": 22.25
-            }, 
-            "600547.XSHG": {
-                "amount": 100.0, 
-                "name": "\u5c71\u4e1c\u9ec4\u91d1", 
-                "price": 48.700000762939
+                "name": "\u4e1c\u65ed\u5149\u7535", 
+                "price": 14.170000076294
             }
         }, 
-        "value": 25332.5799694823
+        "value": 25768.1500152588
     }, 
     "pre_close": {
-        "000568.XSHE": 32.799999237061, 
-        "002736.XSHE": 17.239999771118, 
-        "600188.XSHG": 12.010000228882, 
-        "600372.XSHG": 22, 
-        "600547.XSHG": 46.529998779297
+        "000413.XSHE": 12.880000114441
     }
 }
