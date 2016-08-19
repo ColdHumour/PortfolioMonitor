@@ -13,13 +13,13 @@ porfolio monitor api server
 
 
 from flask import Flask, request, send_from_directory
-from flask.ext.restful import Resource, Api
+from flask_restful import Resource, Api
 
 app = Flask("PortfolioMonitor")
 api = Api(app)
 
 from lib.terminal import Terminal
-from lib.utils.log import logger
+# from lib.utils.log import logger
 
 terminal = Terminal()
 

@@ -207,6 +207,9 @@ def load_daily_close_prices(universe, start, end):
 
     i_end = TRADING_DAYS_DICT[end]
     end = TRADING_DAYS_ALL[i_end+1]
+    today = datetime.datetime.today()
+    if end == today.strftime("%Y-%m-%d"):
+        end = (today - datetime.timedelta(1)).strftime("%Y-%m-%d")
 
     if n > 500:
         raise ValueError("Too many trading days between {} and {}!".format(start, end))

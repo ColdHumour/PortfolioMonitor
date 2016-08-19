@@ -121,17 +121,35 @@ class Terminal(object):
             redraw = True
             logger.info("Benchmark data file is outdated. Downloading benchmark data ({}) from {} to {} through scraper...".format(benchmark, start, end))
 
-            data = load_daily_close_prices(universe=[benchmark],
-                                           start=start, end=end)
-            assert len(data[benchmark]) == len(self._trading_days)
+            if benchmark_info['start'] > start:
+                data = load_daily_close_prices(universe=[benchmark], start=start, end=benchmark_info['start'])
+                assert len(data[benchmark]) == len(get_trading_days(start, benchmark_info['start']))
+
+                benchmark_info['start'] = start
+                benchmark_info['data'] = data[benchmark][:-1] + benchmark_info['data']
+            elif benchmark_info['start'] < start:
+                d = len(get_trading_days(benchmark_info['start'], start))
+                benchmark_info['start'] = start
+                benchmark_info['data'] = benchmark_info['data'][d-1:]
+
+            if benchmark_info['end'] < end:
+                data = load_daily_close_prices(universe=[benchmark], start=benchmark_info['end'], end=end)
+
+                today = datetime.now().strftime("%Y-%m-%d")
+                if end == today:
+                    assert len(data[benchmark]) + 1 == len(get_trading_days(end, benchmark_info['end']))
+                else:
+                    assert len(data[benchmark]) == len(get_trading_days(end, benchmark_info['end']))
+
+                benchmark_info['end'] = end
+                benchmark_info['data'] += data[benchmark][1:]
+            elif benchmark_info['end'] > end:
+                d = len(get_trading_days(end, benchmark_info['end']))
+                benchmark_info['end'] = end
+                benchmark_info['data'] = benchmark_info['data'][:-d+1]
+
             logger.info("Successfully downloaded benchmark data!")
 
-            benchmark_info = {
-                "sec_id": benchmark,
-                "start": start,
-                "end": end,
-                "data": data[benchmark],
-            }
             f = open(BENCHMARK_CACHE_FILE, 'w')
             f.write(json.dumps(benchmark_info, sort_keys=True, indent=4))
             f.close()
@@ -142,8 +160,7 @@ class Terminal(object):
         assert len(self._benchmark_history) == len(self._portfolio_history)
         v0 = self._benchmark_history[0]
         self._benchmark_return = [v/v0 - 1 for v in self._benchmark_history]
-        if redraw:
-            self._draw_history_timeline()
+        self._draw_history_timeline()
 
     def _draw_history_timeline(self):
         fig = Figure(figsize=(7, 3))
@@ -231,6 +248,19 @@ class Terminal(object):
             self._snapshot.save()
             self._positions.set_current_info(today, self._snapshot.latest_position())
             self._positions.save_current_position()
+            logger.info("Portfolio data saved at ./lib/posdb.")
+
+            with open(BENCHMARK_CACHE_FILE, 'r') as bm_file:
+                benchmark_info = json.load(bm_file)
+
+            if benchmark_info['end'] != today:
+                benchmark_info['data'].append((self._snapshot._benchmark_timeline[-1] + 1) * self._snapshot._benchmark_pre_close)
+                benchmark_info['end'] = today
+                f = open(BENCHMARK_CACHE_FILE, 'w')
+                f.write(json.dumps(benchmark_info, sort_keys=True, indent=4))
+                f.close()
+                logger.info("Benchmark data saved at ./static/temp/benchmark.json.")
+
         return ""
 
     @property
