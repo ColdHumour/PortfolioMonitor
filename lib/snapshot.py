@@ -224,14 +224,14 @@ class Snapshot(object):
         for sec in sorted(self._position["securities"]):
             info = self._position["securities"][sec]
             pre_close = self._pre_close[sec]
-            ret = (info["price"] / pre_close - 1)*100
+            ret = (info["price"] / pre_close - 1)
             flag = "profit" if ret >= 0 else "loss"
             row = [flag,
                    sec[:6],
                    info["name"],
                    str(int(info["amount"])),
                    "{:.2f}".format(round(info["price"], 2)),
-                   "{:.2f}%".format(round(ret, 2)),
+                   "{:.2%}".format(round(ret, 2)),
                    "{:.2f}".format(round((info["price"] - pre_close) * info["amount"], 2))]
             table_html += u"<tr class=\"{}\"><td class=\"name\">{}</td><td class=\"name\">{}</td><td class=\"price\">{}</td><td class=\"price\">{}</td><td class=\"price\">{}</td><td class=\"price\">{}</td></tr>".format(*row)
 
