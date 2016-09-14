@@ -1,35 +1,23 @@
 {
     "benchmark": "000300.XSHG", 
-    "benchmark_last_value": 3262.6042480469, 
-    "benchmark_pre_close": 3318.0439453125, 
-    "date": "2016-09-12", 
+    "benchmark_last_value": 3239.4711914062, 
+    "benchmark_pre_close": 3260.3330078125, 
+    "date": "2016-09-14", 
     "minute": "15:00", 
-    "portfolio_last_value": 24809.200076294, 
-    "portfolio_pre_close": 24940.200022888203, 
+    "portfolio_last_value": 24872.6000457764, 
+    "portfolio_pre_close": 24832.6000839233, 
     "position": {
-        "cash": 17389.2, 
+        "cash": 21920.6, 
         "securities": {
-            "000728.XSHE": {
-                "amount": 100.0, 
-                "name": "\u56fd\u5143\u8bc1\u5238", 
-                "price": 19.110000610352
-            }, 
             "002241.XSHE": {
                 "amount": 100.0, 
                 "name": "\u6b4c\u5c14\u80a1\u4efd", 
-                "price": 28.520000457764
-            }, 
-            "600663.XSHG": {
-                "amount": 100.0, 
-                "name": "\u9646\u5bb6\u5634", 
-                "price": 26.569999694824
+                "price": 29.520000457764
             }
         }, 
-        "value": 24809.200076294
+        "value": 24872.6000457764
     }, 
     "pre_close": {
-        "000728.XSHE": 20.010000228882, 
-        "002241.XSHE": 29.540000915527, 
-        "600663.XSHG": 25.959999084473
+        "002241.XSHE": 29.120000839233
     }
 }
